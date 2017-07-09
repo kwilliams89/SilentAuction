@@ -32,5 +32,10 @@ namespace SilentAuction.Controllers
         {
             return View();
         }
+
+        public IActionResult Items()
+        {
+            return View();
+        }
     }
 }
