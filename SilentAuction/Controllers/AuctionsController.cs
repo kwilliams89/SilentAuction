@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,17 +10,34 @@ namespace SilentAuction.Controllers
 {
     public class AuctionsController : Controller
     {
-        private readonly AuctionContext _context;
+        private AuctionContext AuctionContext { get; }
 
-        public AuctionsController(AuctionContext context)
+        public AuctionsController(AuctionContext auctionContext)
         {
-            _context = context;    
+            AuctionContext = auctionContext ?? throw new ArgumentNullException(nameof(auctionContext));
         }
 
         // GET: Auctions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Auctions.ToListAsync());
+            return View(await AuctionContext.Auctions.ToListAsync());
+        }
+
+        public async Task<IActionResult> SilentAuction(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var auction = await AuctionContext.Auctions
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (auction == null)
+            {
+                return NotFound();
+            }
+
+            return View(auction);
         }
 
         // GET: Auctions/Details/5
@@ -30,7 +48,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await _context.Auctions
+            var auction = await AuctionContext.Auctions
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {
@@ -55,8 +73,8 @@ namespace SilentAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(auction);
-                await _context.SaveChangesAsync();
+                AuctionContext.Add(auction);
+                await AuctionContext.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(auction);
@@ -70,7 +88,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await _context.Auctions.SingleOrDefaultAsync(m => m.Id == id);
+            var auction = await AuctionContext.Auctions.SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {
                 return NotFound();
@@ -94,8 +112,8 @@ namespace SilentAuction.Controllers
             {
                 try
                 {
-                    _context.Update(auction);
-                    await _context.SaveChangesAsync();
+                    AuctionContext.Update(auction);
+                    await AuctionContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,7 +139,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await _context.Auctions
+            var auction = await AuctionContext.Auctions
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {
@@ -136,15 +154,15 @@ namespace SilentAuction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var auction = await _context.Auctions.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Auctions.Remove(auction);
-            await _context.SaveChangesAsync();
+            var auction = await AuctionContext.Auctions.SingleOrDefaultAsync(m => m.Id == id);
+            AuctionContext.Auctions.Remove(auction);
+            await AuctionContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         private bool AuctionExists(int id)
         {
-            return _context.Auctions.Any(e => e.Id == id);
+            return AuctionContext.Auctions.Any(e => e.Id == id);
         }
     }
 }
