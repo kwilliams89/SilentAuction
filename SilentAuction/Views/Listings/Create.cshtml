@@ -12,6 +12,12 @@
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
+            <label asp-for="AuctionId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="AuctionId" class ="form-control" asp-items="ViewBag.AuctionId"></select>
+            </div>
+        </div>
+        <div class="form-group">
             <label asp-for="ItemId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <select asp-for="ItemId" class ="form-control" asp-items="ViewBag.ItemId"></select>

@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
@@ -22,8 +19,7 @@ namespace SilentAuction.Controllers
         // GET: Auctions
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Auctions.Include(a => a.Listing);
-            return View(await auctionContext.ToListAsync());
+            return View(await _context.Auctions.ToListAsync());
         }
 
         // GET: Auctions/Details/5
@@ -35,7 +31,6 @@ namespace SilentAuction.Controllers
             }
 
             var auction = await _context.Auctions
-                .Include(a => a.Listing)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {
@@ -48,7 +43,6 @@ namespace SilentAuction.Controllers
         // GET: Auctions/Create
         public IActionResult Create()
         {
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id");
             return View();
         }
 
@@ -57,7 +51,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ListingId,StartDate,EndDate")] Auction auction)
+        public async Task<IActionResult> Create([Bind("Id,StartDate,EndDate")] Auction auction)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +59,6 @@ namespace SilentAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", auction.ListingId);
             return View(auction);
         }
 
@@ -82,7 +75,6 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", auction.ListingId);
             return View(auction);
         }
 
@@ -91,7 +83,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ListingId,StartDate,EndDate")] Auction auction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartDate,EndDate")] Auction auction)
         {
             if (id != auction.Id)
             {
@@ -118,7 +110,6 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", auction.ListingId);
             return View(auction);
         }
 
@@ -131,7 +122,6 @@ namespace SilentAuction.Controllers
             }
 
             var auction = await _context.Auctions
-                .Include(a => a.Listing)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {

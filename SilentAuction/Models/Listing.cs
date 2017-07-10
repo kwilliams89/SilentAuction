@@ -9,6 +9,13 @@ namespace SilentAuction.Models
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey("Auction")]
+        [Display(Name = "Auction")]
+        public int AuctionId { get; set; }
+
+        public Auction Auction { get; set; }
+
+        [Required]
         [ForeignKey("Item")]
         [Display(Name = "Item")]
         public int ItemId { get; set; }

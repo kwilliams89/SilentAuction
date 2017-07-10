@@ -19,6 +19,9 @@
                     @Html.DisplayNameFor(model => model.Increment)
                 </th>
             <th>
+                @Html.DisplayNameFor(model => model.Auction)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Item)
             </th>
             <th></th>
@@ -32,6 +35,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Increment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Auction.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Item.Name)

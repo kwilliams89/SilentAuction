@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SilentAuction.Models
 {
@@ -10,13 +10,6 @@ namespace SilentAuction.Models
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("Listing")]
-        [Display(Name = "Listing")]
-        public int ListingId { get; set; }
-
-        public Listing Listing { get; set; }
-
-        [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
@@ -24,6 +17,9 @@ namespace SilentAuction.Models
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "End Date")]
-        public DateTime EndDate { get; set; }        
+        public DateTime EndDate { get; set; }
+
+        // Has Many
+        public ICollection<Listing> Listings { get; set; }
     }
 }

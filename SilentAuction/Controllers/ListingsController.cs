@@ -22,7 +22,7 @@ namespace SilentAuction.Controllers
         // GET: Listings
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Listings.Include(l => l.Item);
+            var auctionContext = _context.Listings.Include(l => l.Auction).Include(l => l.Item);
             return View(await auctionContext.ToListAsync());
         }
 
@@ -35,6 +35,7 @@ namespace SilentAuction.Controllers
             }
 
             var listing = await _context.Listings
+                .Include(l => l.Auction)
                 .Include(l => l.Item)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (listing == null)
@@ -48,6 +49,7 @@ namespace SilentAuction.Controllers
         // GET: Listings/Create
         public IActionResult Create()
         {
+            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id");
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name");
             return View();
         }
@@ -57,7 +59,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ItemId,StartingBid,Increment")] Listing listing)
+        public async Task<IActionResult> Create([Bind("Id,AuctionId,ItemId,StartingBid,Increment")] Listing listing)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +67,7 @@ namespace SilentAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id", listing.AuctionId);
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
             return View(listing);
         }
@@ -82,6 +85,7 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
+            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id", listing.AuctionId);
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
             return View(listing);
         }
@@ -91,7 +95,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ItemId,StartingBid,Increment")] Listing listing)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,AuctionId,ItemId,StartingBid,Increment")] Listing listing)
         {
             if (id != listing.Id)
             {
@@ -118,6 +122,7 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
+            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id", listing.AuctionId);
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
             return View(listing);
         }
@@ -131,6 +136,7 @@ namespace SilentAuction.Controllers
             }
 
             var listing = await _context.Listings
+                .Include(l => l.Auction)
                 .Include(l => l.Item)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (listing == null)
