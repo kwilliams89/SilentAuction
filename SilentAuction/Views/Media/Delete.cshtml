@@ -1,4 +1,4 @@
-@model SilentAuction.Models.Item
+@model SilentAuction.Models.Media
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,21 +8,15 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Item</h4>
+    <h4>Media</h4>
     <hr />
     <dl class="dl-horizontal">
         <input type="hidden" asp-for="Id" />
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.FileName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.FileName)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Type)
@@ -31,16 +25,10 @@
             @Html.DisplayFor(model => model.Type)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.RetailPrice)
+            @Html.DisplayNameFor(model => model.Content)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.RetailPrice)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StartingBid)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartingBid)
+            @Html.DisplayFor(model => model.Content)
         </dd>
     </dl>
     

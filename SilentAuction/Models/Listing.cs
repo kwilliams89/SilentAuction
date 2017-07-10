@@ -1,12 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SilentAuction.Models
 {
     public class Listing
     {
+        [Key]
         public int Id { get; set; }
+
+        [Required]
+        [ForeignKey("Item")]
+        [Display(Name = "Item")]
+        public int ItemId { get; set; }
+
+        [Required]
+        [Display(Name = "Starting Bid")]
+        [DataType(DataType.Currency)]
+        public decimal StartingBid { get; set; }
+
+        [Required]
+        [DataType(DataType.Currency)]
+        public decimal Increment { get; set; }
     }
 }

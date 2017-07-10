@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
-    public class ItemsController : Controller
+    public class MediaController : Controller
     {
         private readonly AuctionContext _context;
 
-        public ItemsController(AuctionContext context)
+        public MediaController(AuctionContext context)
         {
             _context = context;    
         }
 
-        // GET: Items
+        // GET: Media
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Items.ToListAsync());
+            return View(await _context.Media.ToListAsync());
         }
 
-        // GET: Items/Details/5
+        // GET: Media/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -30,39 +30,39 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items
+            var media = await _context.Media
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            if (media == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(media);
         }
 
-        // GET: Items/Create
+        // GET: Media/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Items/Create
+        // POST: Media/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SponsorId,Name,Description,Type,RetailPrice,StartingBid")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,FileName,Type,Content")] Media media)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(item);
+                _context.Add(media);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(item);
+            return View(media);
         }
 
-        // GET: Items/Edit/5
+        // GET: Media/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -70,22 +70,22 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            var media = await _context.Media.SingleOrDefaultAsync(m => m.Id == id);
+            if (media == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(media);
         }
 
-        // POST: Items/Edit/5
+        // POST: Media/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SponsorId,Name,Description,Type,RetailPrice,StartingBid")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FileName,Type,Content")] Media media)
         {
-            if (id != item.Id)
+            if (id != media.Id)
             {
                 return NotFound();
             }
@@ -94,12 +94,12 @@ namespace SilentAuction.Controllers
             {
                 try
                 {
-                    _context.Update(item);
+                    _context.Update(media);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.Id))
+                    if (!MediaExists(media.Id))
                     {
                         return NotFound();
                     }
@@ -110,10 +110,10 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(item);
+            return View(media);
         }
 
-        // GET: Items/Delete/5
+        // GET: Media/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -121,30 +121,30 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items
+            var media = await _context.Media
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            if (media == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(media);
         }
 
-        // POST: Items/Delete/5
+        // POST: Media/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Items.Remove(item);
+            var media = await _context.Media.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Media.Remove(media);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool ItemExists(int id)
+        private bool MediaExists(int id)
         {
-            return _context.Items.Any(e => e.Id == id);
+            return _context.Media.Any(e => e.Id == id);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SilentAuction.Models
 {
@@ -33,9 +34,13 @@ namespace SilentAuction.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Required]
         public UserType Type { get; set; }
 
         [DataType(DataType.Currency)]
         public decimal AutoBidAmt { get; set; }
+
+        // Has Many
+        public ICollection<BidHistory> BidHistories { get; set; }
     }
 }

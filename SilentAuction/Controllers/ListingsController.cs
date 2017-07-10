@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
-    public class ItemsController : Controller
+    public class ListingsController : Controller
     {
         private readonly AuctionContext _context;
 
-        public ItemsController(AuctionContext context)
+        public ListingsController(AuctionContext context)
         {
             _context = context;    
         }
 
-        // GET: Items
+        // GET: Listings
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Items.ToListAsync());
+            return View(await _context.Listings.ToListAsync());
         }
 
-        // GET: Items/Details/5
+        // GET: Listings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -30,39 +30,39 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items
+            var listing = await _context.Listings
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            if (listing == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(listing);
         }
 
-        // GET: Items/Create
+        // GET: Listings/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Items/Create
+        // POST: Listings/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SponsorId,Name,Description,Type,RetailPrice,StartingBid")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,ItemId,StartingBid,Increment")] Listing listing)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(item);
+                _context.Add(listing);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(item);
+            return View(listing);
         }
 
-        // GET: Items/Edit/5
+        // GET: Listings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -70,22 +70,22 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            var listing = await _context.Listings.SingleOrDefaultAsync(m => m.Id == id);
+            if (listing == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(listing);
         }
 
-        // POST: Items/Edit/5
+        // POST: Listings/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SponsorId,Name,Description,Type,RetailPrice,StartingBid")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ItemId,StartingBid,Increment")] Listing listing)
         {
-            if (id != item.Id)
+            if (id != listing.Id)
             {
                 return NotFound();
             }
@@ -94,12 +94,12 @@ namespace SilentAuction.Controllers
             {
                 try
                 {
-                    _context.Update(item);
+                    _context.Update(listing);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.Id))
+                    if (!ListingExists(listing.Id))
                     {
                         return NotFound();
                     }
@@ -110,10 +110,10 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(item);
+            return View(listing);
         }
 
-        // GET: Items/Delete/5
+        // GET: Listings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -121,30 +121,30 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items
+            var listing = await _context.Listings
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            if (listing == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(listing);
         }
 
-        // POST: Items/Delete/5
+        // POST: Listings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Items.Remove(item);
+            var listing = await _context.Listings.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Listings.Remove(listing);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool ItemExists(int id)
+        private bool ListingExists(int id)
         {
-            return _context.Items.Any(e => e.Id == id);
+            return _context.Listings.Any(e => e.Id == id);
         }
     }
 }
