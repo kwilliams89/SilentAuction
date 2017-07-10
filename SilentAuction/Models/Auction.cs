@@ -23,5 +23,8 @@ namespace SilentAuction.Models
         [DataType(DataType.Date)]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+
+        // Navigation property
+        public Listing Listing { get; set; }
     }
 }
