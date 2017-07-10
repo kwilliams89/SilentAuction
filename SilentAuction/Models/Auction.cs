@@ -14,6 +14,8 @@ namespace SilentAuction.Models
         [Display(Name = "Listing")]
         public int ListingId { get; set; }
 
+        public Listing Listing { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
@@ -22,9 +24,6 @@ namespace SilentAuction.Models
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "End Date")]
-        public DateTime EndDate { get; set; }
-
-        // Navigation property
-        public Listing Listing { get; set; }
+        public DateTime EndDate { get; set; }        
     }
 }

@@ -24,6 +24,12 @@
         <dd>
             @Html.DisplayFor(model => model.Increment)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Item)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Item.Name)
+        </dd>
     </dl>
     
     <form asp-action="Delete">

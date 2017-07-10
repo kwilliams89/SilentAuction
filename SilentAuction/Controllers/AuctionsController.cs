@@ -1,27 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
     public class AuctionsController : Controller
     {
-        private AuctionContext AuctionContext { get; }
+        private readonly AuctionContext _context;
 
-        public AuctionsController(AuctionContext auctionContext)
+        public AuctionsController(AuctionContext context)
         {
-            AuctionContext = auctionContext ?? throw new ArgumentNullException(nameof(auctionContext));
+            _context = context;    
         }
 
         // GET: Auctions
         public async Task<IActionResult> Index()
         {
-            var auctionContext = AuctionContext.Auctions.Include(a => a.Listing);
+            var auctionContext = _context.Auctions.Include(a => a.Listing);
             return View(await auctionContext.ToListAsync());
         }
 
@@ -33,7 +34,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await AuctionContext.Auctions
+            var auction = await _context.Auctions
                 .Include(a => a.Listing)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
@@ -47,7 +48,7 @@ namespace SilentAuction.Controllers
         // GET: Auctions/Create
         public IActionResult Create()
         {
-            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id");
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id");
             return View();
         }
 
@@ -60,11 +61,11 @@ namespace SilentAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                AuctionContext.Add(auction);
-                await AuctionContext.SaveChangesAsync();
+                _context.Add(auction);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id", auction.ListingId);
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", auction.ListingId);
             return View(auction);
         }
 
@@ -76,12 +77,12 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await AuctionContext.Auctions.SingleOrDefaultAsync(m => m.Id == id);
+            var auction = await _context.Auctions.SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {
                 return NotFound();
             }
-            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id", auction.ListingId);
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", auction.ListingId);
             return View(auction);
         }
 
@@ -101,8 +102,8 @@ namespace SilentAuction.Controllers
             {
                 try
                 {
-                    AuctionContext.Update(auction);
-                    await AuctionContext.SaveChangesAsync();
+                    _context.Update(auction);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,7 +118,7 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id", auction.ListingId);
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", auction.ListingId);
             return View(auction);
         }
 
@@ -129,7 +130,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await AuctionContext.Auctions
+            var auction = await _context.Auctions
                 .Include(a => a.Listing)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (auction == null)
@@ -145,15 +146,15 @@ namespace SilentAuction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var auction = await AuctionContext.Auctions.SingleOrDefaultAsync(m => m.Id == id);
-            AuctionContext.Auctions.Remove(auction);
-            await AuctionContext.SaveChangesAsync();
+            var auction = await _context.Auctions.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Auctions.Remove(auction);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         private bool AuctionExists(int id)
         {
-            return AuctionContext.Auctions.Any(e => e.Id == id);
+            return _context.Auctions.Any(e => e.Id == id);
         }
     }
 }

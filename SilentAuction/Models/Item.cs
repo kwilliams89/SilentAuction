@@ -14,6 +14,8 @@ namespace SilentAuction.Models
         [Display(Name = "Sponsor")]
         public int SponsorId { get; set; }
 
+        public Sponsor Sponsor { get; set; }
+
         [Required]
         [StringLength(35, ErrorMessage = "Must be 35 characters or less")]
         public string Name { get; set; }

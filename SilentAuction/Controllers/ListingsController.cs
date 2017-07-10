@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
@@ -19,7 +22,8 @@ namespace SilentAuction.Controllers
         // GET: Listings
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Listings.ToListAsync());
+            var auctionContext = _context.Listings.Include(l => l.Item);
+            return View(await auctionContext.ToListAsync());
         }
 
         // GET: Listings/Details/5
@@ -31,6 +35,7 @@ namespace SilentAuction.Controllers
             }
 
             var listing = await _context.Listings
+                .Include(l => l.Item)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (listing == null)
             {
@@ -43,6 +48,7 @@ namespace SilentAuction.Controllers
         // GET: Listings/Create
         public IActionResult Create()
         {
+            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name");
             return View();
         }
 
@@ -59,6 +65,7 @@ namespace SilentAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
             return View(listing);
         }
 
@@ -75,6 +82,7 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
+            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
             return View(listing);
         }
 
@@ -110,6 +118,7 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
+            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
             return View(listing);
         }
 
@@ -122,6 +131,7 @@ namespace SilentAuction.Controllers
             }
 
             var listing = await _context.Listings
+                .Include(l => l.Item)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (listing == null)
             {

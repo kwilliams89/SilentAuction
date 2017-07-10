@@ -14,11 +14,15 @@ namespace SilentAuction.Models
         [Display(Name = "User")]
         public int UserId { get; set; }
 
+        public User User { get; set; }
+
         [Required]
         [ForeignKey("Listing")]
         [Display(Name = "Listing")]
         public int ListingId { get; set; }
 
+        public Listing Listing { get; set; }
+        
         [Required]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }

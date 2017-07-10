@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
@@ -19,7 +22,8 @@ namespace SilentAuction.Controllers
         // GET: BidHistories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BidHistories.ToListAsync());
+            var auctionContext = _context.BidHistories.Include(b => b.Listing).Include(b => b.User);
+            return View(await auctionContext.ToListAsync());
         }
 
         // GET: BidHistories/Details/5
@@ -31,6 +35,8 @@ namespace SilentAuction.Controllers
             }
 
             var bidHistory = await _context.BidHistories
+                .Include(b => b.Listing)
+                .Include(b => b.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (bidHistory == null)
             {
@@ -43,6 +49,8 @@ namespace SilentAuction.Controllers
         // GET: BidHistories/Create
         public IActionResult Create()
         {
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
             return View();
         }
 
@@ -59,6 +67,8 @@ namespace SilentAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", bidHistory.ListingId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", bidHistory.UserId);
             return View(bidHistory);
         }
 
@@ -75,6 +85,8 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", bidHistory.ListingId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", bidHistory.UserId);
             return View(bidHistory);
         }
 
@@ -110,6 +122,8 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
+            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", bidHistory.ListingId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", bidHistory.UserId);
             return View(bidHistory);
         }
 
@@ -122,6 +136,8 @@ namespace SilentAuction.Controllers
             }
 
             var bidHistory = await _context.BidHistories
+                .Include(b => b.Listing)
+                .Include(b => b.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (bidHistory == null)
             {

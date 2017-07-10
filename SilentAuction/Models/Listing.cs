@@ -13,6 +13,8 @@ namespace SilentAuction.Models
         [Display(Name = "Item")]
         public int ItemId { get; set; }
 
+        public Item Item { get; set; }
+
         [Required]
         [Display(Name = "Starting Bid")]
         [DataType(DataType.Currency)]
