@@ -1,8 +1,6 @@
 ﻿using SilentAuction.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SilentAuction.Data
 {
@@ -10,6 +8,8 @@ namespace SilentAuction.Data
     {
         public static void Initialize(AuctionContext context)
         {
+            context.Database.EnsureCreated();
+
             if (context.Auctions.Any())
             {
                 return;
@@ -23,7 +23,7 @@ namespace SilentAuction.Data
             {
                 context.Auctions.Add(auction);
             }
-            context.SaveChanges();
+            context.SaveChanges(); //Need to save everytime if using Ids
 
             var sponsors = new Sponsor[]
             {
@@ -55,6 +55,12 @@ namespace SilentAuction.Data
             {
                 context.Listings.Add(listing);
             }
+
+            var role = new Role { Id = RoleId.User, Name = "User" };
+            context.Roles.Add(role);
+
+            role = new Role { Id = RoleId.Administrator, Name = "Administrator" };
+            context.Roles.Add(role);
             context.SaveChanges();
         }
     }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using SilentAuction.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +15,7 @@ namespace SilentAuction.Controllers
 
         public UsersController(AuctionContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Users
@@ -41,9 +43,13 @@ namespace SilentAuction.Controllers
         }
 
         // GET: Users/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var viewModel = new CreateOrEditUserViewModel
+            {
+                User = new User()
+            };
+            return await CreateOrEdit(viewModel);
         }
 
         // POST: Users/Create
@@ -51,15 +57,32 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,Email,Phone,Password,Type,AutoBidAmt")] User user)
+        public async Task<IActionResult> Create(CreateOrEditUserViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                var user = viewModel.User;
+
+                var dbUser = new User
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Password = user.Password,
+                    RoleId = user.RoleId,
+                    AutoBidAmt = user.AutoBidAmt
+                };
+
+                _context.Add(dbUser);
                 await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Successfully created user #{user.UserId.ToString()}.";
+
                 return RedirectToAction("Index");
             }
-            return View(user);
+
+            return await CreateOrEdit(viewModel);
         }
 
         // GET: Users/Edit/5
@@ -71,12 +94,39 @@ namespace SilentAuction.Controllers
             }
 
             var user = await _context.Users.SingleOrDefaultAsync(m => m.UserId == id);
+
             if (user == null)
             {
                 return NotFound();
             }
-            return View(user);
+
+            var viewModel = new CreateOrEditUserViewModel
+            {
+                User = user
+            };
+
+            return await CreateOrEdit(viewModel);
         }
+
+        private async Task<IActionResult> CreateOrEdit(CreateOrEditUserViewModel viewModel)
+        {
+            var roles = await _context.Roles.AsNoTracking().ToListAsync();
+            var selectedRoleId = viewModel.User.RoleId;
+
+            var roleViewModelsQuery =
+                from role in roles
+                select new SelectListItem
+                {
+                    Value = role.Id.ToString(),
+                    Text = role.Name,
+                    Selected = role.Id == selectedRoleId
+                };
+
+            viewModel.Roles = roleViewModelsQuery.ToList();
+
+            return View(viewModel);
+        }
+
 
         // POST: Users/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

@@ -34,8 +34,10 @@ namespace SilentAuction.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
-        public UserType Type { get; set; }
+        [Display(Name = "Role")]
+        public RoleId RoleId { get; set; }
+
+        public virtual Role Role { get; set; }
 
         [DataType(DataType.Currency)]
         public decimal AutoBidAmt { get; set; }
