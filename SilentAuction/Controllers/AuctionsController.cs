@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using SilentAuction.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,21 +24,29 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-        public async Task<IActionResult> SilentAuction(int? id)
+        public IActionResult SilentAuction(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var auction = await AuctionContext.Auctions
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var viewModel = new AuctionViewModel();
+            var auction = AuctionContext.Auctions.FirstOrDefault(a => a.Id == id);
+
+
             if (auction == null)
             {
                 return NotFound();
             }
 
-            return View(auction);
+            if (auction.Listings != null)
+            {
+                var listings = auction.Listings.ToList();
+                viewModel.Listings = listings;
+            }
+
+            return View(viewModel);
         }
 
         // GET: Auctions/Details/5

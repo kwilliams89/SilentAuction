@@ -1,30 +1,35 @@
-@model SilentAuction.Models.Auction
-
+@using SilentAuction.ViewModels
+@using SilentAuction.Controllers
+@model AuctionViewModel
 @{
     ViewData["Title"] = "Silent Auction";
 }
 
-<h2>Silent Auction</h2>
+<h2>@ViewData["Title"]</h2>
+
+<div class="container">
+    @foreach (var listing in Model.Listings)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="media">
+                    <div class="media-left">
+                        Image
+                    </div>
+                    <div class="media-body">
+                        <ul>
+                            <li>@Html.DisplayFor(modelItem => listing.Item.Name)</li>
+                            <li>@Html.DisplayFor(modelItem => listing.Item.RetailPrice)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 
 <div>
-    <h4>Auction</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Home" asp-action="Index">Back to Admin Home</a>
 </div>
