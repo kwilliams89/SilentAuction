@@ -68,6 +68,8 @@ namespace SilentAuction
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            TestSeedData.Initialize(auctionContext);
         }
     }
 }

@@ -1,12 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SilentAuction.Data;
+using System;
+using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private AuctionContext AuctionContext { get; }
+
+        public HomeController(AuctionContext auctionContext)
         {
-            return View();
+            AuctionContext = auctionContext ?? throw new ArgumentNullException(nameof(auctionContext));
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await AuctionContext.Auctions.ToListAsync());
         }
 
         public IActionResult About()
@@ -29,6 +40,11 @@ namespace SilentAuction.Controllers
         }
 
         public IActionResult Registration()
+        {
+            return View();
+        }
+
+        public IActionResult Items()
         {
             return View();
         }

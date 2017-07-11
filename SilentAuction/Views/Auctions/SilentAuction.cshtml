@@ -1,0 +1,37 @@
+@using SilentAuction.ViewModels
+@using SilentAuction.Controllers
+@model AuctionViewModel
+@{
+    ViewData["Title"] = "Silent Auction";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container">
+    @foreach (var listing in Model.Listings)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="media">
+                    <div class="media-left">
+                        Image Here
+                    </div>
+                    <div class="media-body">
+                        <ul>
+                            <li>Starting Bid: @Html.DisplayFor(modelItem => listing.StartingBid)</li>
+                            <li>Increment: @Html.DisplayFor(modelItem => listing.Increment)</li>
+                            <li>@Html.DisplayFor(modelItem => listing.ItemId)</li>
+                            <li>@Html.DisplayFor(modelItem => listing.Item.Description)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div>
+    <hr />
+    <a asp-controller="Home" asp-action="Index">Back to Admin Home</a>
+</div>

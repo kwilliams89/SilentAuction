@@ -24,7 +24,7 @@
 <body>
 
     <!-- Top Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,6 +34,18 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">SilentAuction</a>
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Auctions" asp-action="Index">Auctions</a></li>
+                    <li><a asp-area="" asp-controller="Listings" asp-action="Index">Listings</a></li>
+                    <li><a asp-area="" asp-controller="Items" asp-action="Index"><span class="glyphicon glyphicon-plus"></span>Items</a></li>
+                    <li><a asp-area="" asp-controller="Media" asp-action="Index">Media</a></li>
+                    <li><a asp-area="" asp-controller="Sponsors" asp-action="Index">Sponsors</a></li>
+                    <li><a asp-area="" asp-controller="BidHistories" asp-action="Index">BidHistories</a></li>
+                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
+                </ul>
             </div>
 
             <div class="navbar-collapse collapse">

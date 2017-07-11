@@ -1,0 +1,47 @@
+@model SilentAuction.Models.Listing
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Listing</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <input type="hidden" asp-for="Id" />
+        <dt>
+            @Html.DisplayNameFor(model => model.StartingBid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartingBid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Increment)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Increment)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Auction)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Auction.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Item)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Item.Name)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </form>
+</div>
