@@ -28,9 +28,9 @@ namespace SilentAuction.Models
         /// </summary>
         public string Description { get; set; }
 
-        [Required]
-        [StringLength(35, ErrorMessage = "Must be 35 characters or less")]
-        public string Type { get; set; }
+        public int CatagoryId { get; set; }
+
+        public virtual Catagory Catagory { get; set; }
 
         [Required]
         [Display(Name = "Retail Price")]

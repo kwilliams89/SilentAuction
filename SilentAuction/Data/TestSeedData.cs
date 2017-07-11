@@ -35,10 +35,26 @@ namespace SilentAuction.Data
             }
             context.SaveChanges();
 
+            var accommodationCatagory = new Catagory { Name = "Accommodation" };
+            context.Catagories.Add(accommodationCatagory);
+
+            var advertisingCatagory = new Catagory { Name = "Advertising" };
+            context.Catagories.Add(advertisingCatagory);
+
+            var diningCatagory = new Catagory { Name = "Dining" };
+            context.Catagories.Add(diningCatagory);
+
+            var entertainmentCatagory = new Catagory { Name = "Entertainment" };
+            context.Catagories.Add(diningCatagory);
+
+            var lifestyleCatagory = new Catagory { Name = "Lifestyle" };
+            context.Catagories.Add(diningCatagory);
+            context.SaveChanges();
+
             var items = new Item[]
             {
-                new Item { Name = "Hotel Zero", Description = "Hotel Zero - A grand hotel", Type = "Hotel", RetailPrice = 100, StartingBid = 20, SponsorId = sponsors[0].Id, Sponsor = sponsors[0]},
-                new Item { Name = "Tour Zero", Description = "Tour Zero - A grand tour", Type = "Tour", RetailPrice = 60, StartingBid = 10, SponsorId = sponsors[0].Id, Sponsor = sponsors[0]}
+                new Item { Name = "Hotel Zero", Description = "Hotel Zero - A grand hotel", Catagory = accommodationCatagory, RetailPrice = 100, StartingBid = 20, SponsorId = sponsors[0].Id, Sponsor = sponsors[0]},
+                new Item { Name = "Tour Zero", Description = "Tour Zero - A grand tour", Catagory = accommodationCatagory, RetailPrice = 60, StartingBid = 10, SponsorId = sponsors[0].Id, Sponsor = sponsors[0]}
             };
             foreach (Item item in items)
             {
