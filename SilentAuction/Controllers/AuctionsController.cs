@@ -32,18 +32,11 @@ namespace SilentAuction.Controllers
             }
 
             var viewModel = new AuctionViewModel();
-            var auction = AuctionContext.Auctions.FirstOrDefault(a => a.Id == id);
 
-
-            if (auction == null)
+            var listings = AuctionContext.Listings.Where(listing => listing.AuctionId == id);
+            if (listings != null)
             {
-                return NotFound();
-            }
-
-            if (auction.Listings != null)
-            {
-                var listings = auction.Listings.ToList();
-                viewModel.Listings = listings;
+                viewModel.Listings = listings.ToList();
             }
 
             return View(viewModel);

@@ -14,12 +14,13 @@
             <div class="panel-body">
                 <div class="media">
                     <div class="media-left">
-                        Image
+                        Image Here
                     </div>
                     <div class="media-body">
                         <ul>
-                            <li>@Html.DisplayFor(modelItem => listing.Item.Name)</li>
-                            <li>@Html.DisplayFor(modelItem => listing.Item.RetailPrice)</li>
+                            <li>Starting Bid: @Html.DisplayFor(modelItem => listing.StartingBid)</li>
+                            <li>Increment: @Html.DisplayFor(modelItem => listing.Increment)</li>
+                            <li>@Html.DisplayFor(modelItem => listing.ItemId)</li>
                         </ul>
                     </div>
                 </div>

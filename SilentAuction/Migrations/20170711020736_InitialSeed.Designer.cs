@@ -9,8 +9,8 @@ using SilentAuction.Models;
 namespace SilentAuction.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    [Migration("20170710204617_AuctionFix")]
-    partial class AuctionFix
+    [Migration("20170711020736_InitialSeed")]
+    partial class InitialSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,13 +25,9 @@ namespace SilentAuction.Migrations
 
                     b.Property<DateTime>("EndDate");
 
-                    b.Property<int>("ListingId");
-
                     b.Property<DateTime>("StartDate");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ListingId");
 
                     b.ToTable("Auctions");
                 });
@@ -54,6 +50,8 @@ namespace SilentAuction.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ItemId");
+
+                    b.HasIndex("ListingId");
 
                     b.HasIndex("UserId");
 
@@ -93,6 +91,8 @@ namespace SilentAuction.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AuctionId");
+
                     b.Property<decimal>("Increment");
 
                     b.Property<int>("ItemId");
@@ -100,6 +100,8 @@ namespace SilentAuction.Migrations
                     b.Property<decimal>("StartingBid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuctionId");
 
                     b.HasIndex("ItemId");
 
@@ -185,21 +187,18 @@ namespace SilentAuction.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SilentAuction.Models.Auction", b =>
-                {
-                    b.HasOne("SilentAuction.Models.Listing", "Listing")
-                        .WithMany()
-                        .HasForeignKey("ListingId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SilentAuction.Models.BidHistory", b =>
                 {
                     b.HasOne("SilentAuction.Models.Item")
                         .WithMany("BidHistories")
                         .HasForeignKey("ItemId");
 
-                    b.HasOne("SilentAuction.Models.User")
+                    b.HasOne("SilentAuction.Models.Listing", "Listing")
+                        .WithMany()
+                        .HasForeignKey("ListingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SilentAuction.Models.User", "User")
                         .WithMany("BidHistories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -207,7 +206,7 @@ namespace SilentAuction.Migrations
 
             modelBuilder.Entity("SilentAuction.Models.Item", b =>
                 {
-                    b.HasOne("SilentAuction.Models.Sponsor")
+                    b.HasOne("SilentAuction.Models.Sponsor", "Sponsor")
                         .WithMany("Items")
                         .HasForeignKey("SponsorId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -215,7 +214,12 @@ namespace SilentAuction.Migrations
 
             modelBuilder.Entity("SilentAuction.Models.Listing", b =>
                 {
-                    b.HasOne("SilentAuction.Models.Item")
+                    b.HasOne("SilentAuction.Models.Auction", "Auction")
+                        .WithMany("Listings")
+                        .HasForeignKey("AuctionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SilentAuction.Models.Item", "Item")
                         .WithMany("Listings")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade);
