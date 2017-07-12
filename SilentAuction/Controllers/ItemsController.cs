@@ -22,7 +22,7 @@ namespace SilentAuction.Controllers
         // GET: Items
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Items.Include(i => i.Sponsor);
+            var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.Catagory);
             return View(await auctionContext.ToListAsync());
         }
 
@@ -36,6 +36,7 @@ namespace SilentAuction.Controllers
 
             var item = await _context.Items
                 .Include(i => i.Sponsor)
+                .Include(i => i.Catagory)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
