@@ -21,7 +21,7 @@ namespace SilentAuction.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.Users.Include(user => user.Role).ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -33,6 +33,7 @@ namespace SilentAuction.Controllers
             }
 
             var user = await _context.Users
+                .Include(u => u.Role)
                 .SingleOrDefaultAsync(m => m.UserId == id);
             if (user == null)
             {
@@ -133,8 +134,10 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Phone,Password,Type,AutoBidAmt")] User user)
+        public async Task<IActionResult> Edit(int id, CreateOrEditUserViewModel viewModel)
         {
+            var user = viewModel.User;
+
             if (id != user.UserId)
             {
                 return NotFound();
@@ -158,9 +161,12 @@ namespace SilentAuction.Controllers
                         throw;
                     }
                 }
+
+                TempData["SuccessMessage"] = $"Successfully edited user #{user.UserId.ToString()}.";
+
                 return RedirectToAction("Index");
             }
-            return View(user);
+            return await CreateOrEdit(viewModel);
         }
 
         // GET: Users/Delete/5
@@ -172,6 +178,7 @@ namespace SilentAuction.Controllers
             }
 
             var user = await _context.Users
+                .Include(u => u.Role)
                 .SingleOrDefaultAsync(m => m.UserId == id);
             if (user == null)
             {

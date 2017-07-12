@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
@@ -22,7 +20,7 @@ namespace SilentAuction.Controllers
         // GET: Items
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Items.Include(i => i.Sponsor);
+            var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.Catagory);
             return View(await auctionContext.ToListAsync());
         }
 
@@ -36,6 +34,7 @@ namespace SilentAuction.Controllers
 
             var item = await _context.Items
                 .Include(i => i.Sponsor)
+                .Include(i => i.Catagory)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
@@ -49,6 +48,7 @@ namespace SilentAuction.Controllers
         public IActionResult Create()
         {
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name");
+            ViewData["CatagoryId"] = new SelectList(_context.Catagories, "Id", "Name");
             return View();
         }
 
@@ -65,6 +65,7 @@ namespace SilentAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            ViewData["CatagoryId"] = new SelectList(_context.Catagories, "Id", "Name", item.CatagoryId);
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
             return View(item);
         }
@@ -77,11 +78,12 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
+            var item = await _context.Items.Include(i => i.Catagory).SingleOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
                 return NotFound();
             }
+            ViewData["CatagoryId"] = new SelectList(_context.Catagories, "Id", "Name", item.CatagoryId);
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
             return View(item);
         }
@@ -119,6 +121,7 @@ namespace SilentAuction.Controllers
                 return RedirectToAction("Index");
             }
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
+            ViewData["CatagoryId"] = new SelectList(_context.Catagories, "Id", "Name", item.CatagoryId);
             return View(item);
         }
 
@@ -132,6 +135,7 @@ namespace SilentAuction.Controllers
 
             var item = await _context.Items
                 .Include(i => i.Sponsor)
+                .Include(i => i.Catagory)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
