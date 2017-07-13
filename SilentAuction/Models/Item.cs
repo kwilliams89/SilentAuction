@@ -14,7 +14,7 @@ namespace SilentAuction.Models
         [Display(Name = "Sponsor")]
         public int SponsorId { get; set; }
 
-        public Sponsor Sponsor { get; set; }
+        public virtual Sponsor Sponsor { get; set; }
 
         [Required]
         [StringLength(35, ErrorMessage = "Must be 35 characters or less")]
@@ -28,6 +28,9 @@ namespace SilentAuction.Models
         /// </summary>
         public string Description { get; set; }
 
+        [Required]
+        [ForeignKey("Catagory")]
+        [Display(Name = "Catagory")]
         public int CatagoryId { get; set; }
 
         public virtual Catagory Catagory { get; set; }

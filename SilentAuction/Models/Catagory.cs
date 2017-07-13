@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SilentAuction.Models
 {
@@ -9,5 +10,7 @@ namespace SilentAuction.Models
 
         [StringLength(100)]
         public string Name { get; set; }
+
+        public ICollection<Item> Items { get; set; }
     }
 }
