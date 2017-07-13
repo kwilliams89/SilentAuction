@@ -47,7 +47,7 @@ namespace SilentAuction.Models
         public decimal StartingBid { get; set; }
 
         // Has Many
-        public ICollection<Media> Media { get; set; }
+        public virtual ICollection<ItemMedia> ItemMedia { get; set; }
 
         public ICollection<Listing> Listings { get; set; }
 

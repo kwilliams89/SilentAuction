@@ -14,7 +14,20 @@
             <div class="panel-body">
                 <div class="media">
                     <div class="media-left">
-                        Image Here
+                        <!--Use JQuery and bootstrap carousel???? for the div of this to get a click and look at images-->
+                        <div>
+                            @{
+                                var image = listing.Item.ItemMedia.FirstOrDefault();
+                            }
+                            @if (image != null)
+                            {
+                                <img class="media-object" src="@Url.Action(nameof(MediaController.Thumbnail), "Media", values: new { id = image.MediaId})" />
+                            }
+                            else
+                            {
+                                <img class="media-object" src="~/images/no-image.jpg" />
+                            }
+                        </div>
                     </div>
                     <div class="media-body">
                         <ul>

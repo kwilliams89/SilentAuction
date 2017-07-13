@@ -1,6 +1,8 @@
 ﻿using SilentAuction.Models;
 using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace SilentAuction.Data
 {
@@ -77,6 +79,31 @@ namespace SilentAuction.Data
 
             role = new Role { Id = RoleId.Administrator, Name = "Administrator" };
             context.Roles.Add(role);
+
+            // Images
+            // Found at: https://phab.phukethotelsassociation.com/silent-auction/
+            var currentFolderPath = Assembly.GetEntryAssembly().Location;
+
+            var poolVillaTisara1 = new Media
+            {
+                FileName = "PoolVillaTisara1.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/2017_13_02_TRISARA__1090_FINAL-1900x1267.jpg"))
+            };
+            context.Media.Add(poolVillaTisara1);
+
+            context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara1 });
+
+            var poolVillaTisara2 = new Media
+            {
+                FileName = "poolVillaTisara2.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/H-OPV-10_Bathroom-1900x1501.jpg"))
+            };
+            context.Media.Add(poolVillaTisara2);
+
+            context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara2 });
+
             context.SaveChanges();
         }
     }

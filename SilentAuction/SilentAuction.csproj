@@ -7,6 +7,16 @@
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="SampleImages\Item1\2017_13_02_TRISARA__1090_FINAL-1900x1267.jpg" />
+    <Content Include="SampleImages\Item1\H-OPV-10_Bathroom-1900x1501.jpg" />
+    <Content Include="SampleImages\Item1\H-OPV-36-1900x1267.jpg" />
+    <Content Include="wwwroot\images\2017_13_02_TRISARA__1090_FINAL-1900x1267.jpg" />
+    <Content Include="wwwroot\images\H-OPV-10_Bathroom-1900x1501.jpg" />
+    <Content Include="wwwroot\images\H-OPV-36-1900x1267.jpg" />
+    <Content Include="wwwroot\images\no-image.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
@@ -20,6 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.1" />
+    <PackageReference Include="SkiaSharp" Version="1.58.1" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />

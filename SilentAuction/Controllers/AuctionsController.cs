@@ -32,14 +32,16 @@ namespace SilentAuction.Controllers
             }
 
             var viewModel = new AuctionViewModel();
-            //var listings = AuctionContext.Listings.Where(listing => listing.AuctionId == id);
 
             var listingsQuery =
                 from listing in AuctionContext.Listings
                     .AsNoTracking()
                     .Include(listing0 => listing0.Item)
+                        .ThenInclude(itemMedia0 => itemMedia0.ItemMedia)
                 where listing.AuctionId == id
                 select listing;
+
+            listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
 
             viewModel.Listings = listingsQuery.ToList();
 
