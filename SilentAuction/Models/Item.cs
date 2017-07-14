@@ -17,7 +17,7 @@ namespace SilentAuction.Models
         public virtual Sponsor Sponsor { get; set; }
 
         [Required]
-        [StringLength(35, ErrorMessage = "Must be 35 characters or less")]
+        [StringLength(256, ErrorMessage = "Must be 256 characters or less")]
         public string Name { get; set; }
 
         /// <summary>
@@ -39,12 +39,6 @@ namespace SilentAuction.Models
         [Display(Name = "Retail Price")]
         [DataType(DataType.Currency)]
         public decimal RetailPrice { get; set; }
-
-        [Required]
-        //https://stackoverflow.com/questions/1165761/decimal-vs-double-which-one-should-i-use-and-when
-        [Display(Name = "Starting Bid")]
-        [DataType(DataType.Currency)]
-        public decimal StartingBid { get; set; }
 
         // Has Many
         public virtual ICollection<ItemMedia> ItemMedia { get; set; }

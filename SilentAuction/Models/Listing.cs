@@ -23,6 +23,7 @@ namespace SilentAuction.Models
         [Required]
         [Display(Name = "Starting Bid")]
         [DataType(DataType.Currency)]
+        //https://stackoverflow.com/questions/1165761/decimal-vs-double-which-one-should-i-use-and-when
         public decimal StartingBid { get; set; }
 
         [Required]
