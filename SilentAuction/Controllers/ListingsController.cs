@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
@@ -238,13 +237,23 @@ namespace SilentAuction.Controllers
                                 }
                                 else
                                 {
-                                    if (!decimal.TryParse(viewModel.StartingBid, out var startingBid))
+                                    string startingBidInput = viewModel.StartingBid;
+                                    if (Regex.IsMatch(startingBidInput, @"^฿"))
+                                    {
+                                        startingBidInput = startingBidInput.Substring(1);
+                                    }
+                                    if (!decimal.TryParse(startingBidInput, out var startingBid))
                                     {
                                         ModelState.AddModelError("StartingBid", "Couldn't parse Starting Bid");
                                     }
                                     else
                                     {
-                                        if (!decimal.TryParse(viewModel.Increment, out var increment))
+                                        string incrementInput = viewModel.Increment;
+                                        if (Regex.IsMatch(incrementInput, @"^฿"))
+                                        {
+                                            incrementInput = incrementInput.Substring(1);
+                                        }
+                                        if (!decimal.TryParse(incrementInput, out var increment))
                                         {
                                             ModelState.AddModelError("Increment", "Couldn't parse Increment");
                                         }
