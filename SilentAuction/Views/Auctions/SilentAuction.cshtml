@@ -8,6 +8,21 @@
 <h2>@ViewData["Title"]</h2>
 
 <div class="container">
+
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
+                    <div>
+                        <label for="searchQuery">Find by Name or Description: </label>
+                        <input class="form-control" type="text" id="searchQuery" name="searchQuery" value="@Model.SearchQuery" />
+                        <input type="submit" value="Search" class="btn btn-default btn-block" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @foreach (var listing in Model.Listings)
     {
         <div class="panel panel-default">
@@ -31,10 +46,10 @@
                     </div>
                     <div class="media-body">
                         <ul>
-                            <li>Starting Bid: @Html.DisplayFor(modelItem => listing.StartingBid)</li>
-                            <li>Increment: @Html.DisplayFor(modelItem => listing.Increment)</li>
-                            <li>@Html.DisplayFor(modelItem => listing.ItemId)</li>
+                            <li>Starting Bid: @Html.DisplayFor(modelItem => listing.Item.Name)</li>
                             <li>@Html.DisplayFor(modelItem => listing.Item.Description)</li>
+                            <li>Increment: @Html.DisplayFor(modelItem => listing.StartingBid)</li>
+                            <li>@Html.DisplayFor(modelItem => listing.ItemId)</li>
                         </ul>
                     </div>
                 </div>

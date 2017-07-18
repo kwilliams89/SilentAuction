@@ -24,14 +24,13 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-        public IActionResult SilentAuction(int? id)
+        public IActionResult SilentAuction(int? id, string searchQuery)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new AuctionViewModel();
 
             var listingsQuery =
                 from listing in AuctionContext.Listings
@@ -41,9 +40,21 @@ namespace SilentAuction.Controllers
                 where listing.AuctionId == id
                 select listing;
 
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.Name.Contains(searchQuery)
+                    || listing0.Item.Description.Contains(searchQuery));
+            }
+
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
 
-            viewModel.Listings = listingsQuery.ToList();
+            var listings = listingsQuery.ToList();
+            var viewModel = new AuctionViewModel
+            {
+                Id = id.Value,
+                Listings = listings,
+                SearchQuery = searchQuery
+            };
 
             return View(viewModel);
         }
