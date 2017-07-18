@@ -10,15 +10,17 @@
 <div class="container">
 
     <div class="row">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
-                    <div>
-                        <label for="searchQuery">Find by Name or Description: </label>
-                        <input class="form-control" type="text" id="searchQuery" name="searchQuery" value="@Model.SearchQuery" />
-                        <input type="submit" value="Search" class="btn btn-default btn-block" />
-                    </div>
-                </form>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
+                        <div>
+                            <label for="searchQuery">Find by Name or Description: </label>
+                            <input class="form-control" type="text" id="searchQuery" name="searchQuery" value="@Model.SearchQuery" />
+                            <input type="submit" value="Search" class="btn btn-default btn-block" />
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
