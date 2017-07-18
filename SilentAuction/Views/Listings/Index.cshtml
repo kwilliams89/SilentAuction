@@ -1,4 +1,5 @@
-@model IEnumerable<SilentAuction.Models.Listing>
+@using SilentAuction.ViewModels
+@model IEnumerable<ListingViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -37,10 +38,10 @@
                 @Html.DisplayFor(modelItem => item.Increment)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Auction.Id)
+                @Html.DisplayFor(modelItem => item.Auction)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Item.Name)
+                @Html.DisplayFor(modelItem => item.Item)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

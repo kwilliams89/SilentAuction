@@ -1,4 +1,5 @@
-@model SilentAuction.Models.Listing
+@using SilentAuction.ViewModels
+@model ListingViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -12,15 +13,15 @@
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="AuctionId" class="col-md-2 control-label"></label>
+            <label asp-for="Auction" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="AuctionId" class ="form-control" asp-items="ViewBag.AuctionId"></select>
+                <select asp-for="Auction" class ="form-control" asp-items="Model.Auctions"></select>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ItemId" class="col-md-2 control-label"></label>
+            <label asp-for="Item" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="ItemId" class ="form-control" asp-items="ViewBag.ItemId"></select>
+                <select asp-for="Item" class ="form-control" asp-items="Model.Items"></select>
             </div>
         </div>
         <div class="form-group">

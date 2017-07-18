@@ -20,7 +20,7 @@ namespace SilentAuction.Data
             // Auctions
             var auctions = new Auction[]
             {
-                new Auction { StartDate = new DateTime(2017, 7, 10), EndDate = new DateTime(2017, 8, 15)}
+                new Auction { Name = "Auction of August 2017", StartDate = new DateTime(2017, 7, 10), EndDate = new DateTime(2017, 8, 15)}
             };
             foreach (Auction auction in auctions)
             {
