@@ -10,5 +10,9 @@ namespace SilentAuction.ViewModels
         public IList<Listing> Listings { get; set; } = new List<Listing>();
 
         public string SearchQuery { get; set; }
+
+        public string AuctionName { get; set; }
+
+        public string AuctionEndDate { get; set; }
     }
 }

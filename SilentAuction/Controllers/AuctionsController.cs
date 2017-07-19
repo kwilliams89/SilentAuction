@@ -4,6 +4,7 @@ using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,6 +32,9 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
+            var auction = AuctionContext.Auctions.SingleOrDefaultAsync(auction0 => auction0.Id == id).Result;
+            var endDate = auction.EndDate;
+            var name = auction.Name;
 
             var listingsQuery =
                 from listing in AuctionContext.Listings
@@ -53,7 +57,9 @@ namespace SilentAuction.Controllers
             {
                 Id = id.Value,
                 Listings = listings,
-                SearchQuery = searchQuery
+                SearchQuery = searchQuery,
+                AuctionEndDate = endDate.ToString("D", new CultureInfo("en-EN")),
+                AuctionName = name
             };
 
             return View(viewModel);

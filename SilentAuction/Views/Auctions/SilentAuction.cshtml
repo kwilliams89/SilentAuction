@@ -1,5 +1,5 @@
-@using SilentAuction.ViewModels
-@using SilentAuction.Controllers
+@using SilentAuction.ViewModels;
+@using SilentAuction.Controllers;
 @model AuctionViewModel
 @{
     ViewData["Title"] = "Silent Auction";
@@ -8,6 +8,12 @@
 <h2>@ViewData["Title"]</h2>
 
 <div class="container">
+
+    <div class="hero-unit text-center panel panel-heading">
+        <h1>@Model.AuctionName</h1>
+        <h4>End Date: @Model.AuctionEndDate</h4>
+        <h6 id="time"></h6>
+    </div>
 
     <div class="row">
         <div class="col-md-3">
@@ -57,7 +63,7 @@
                 </div>
             </div>
         </div>
-    }
+                                }
 </div>
 
 
@@ -65,3 +71,14 @@
     <hr />
     <a asp-controller="Home" asp-action="Index">Back to Admin Home</a>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var myVar = setInterval(myTimer, 1000);
+
+        function myTimer() {
+            var d = new Date();
+            document.getElementById("time").innerHTML = d.toLocaleTimeString();
+        }
+    </script>
+}
