@@ -19,16 +19,16 @@
                         <input type="submit" value="Search" class="btn btn-default btn-block" />
                     </div>
                 </form>
-                <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
-                    <div>
-                        <label for="Pages">Items Per Page</label>
-                        <select asp-for="Pages">
-                            <option value="Five">5</option>
-                            <option value="Ten">10</option>
-                        </select>
-                    </div>
-                </form>
             </div>
+            <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
+                <div>
+                    <label for="Pages">Items Per Page</label>
+                    <select asp-for="Pages">
+                        <option value="Five">5</option>
+                        <option value="Ten">10</option>
+                    </select>
+                </div>
+            </form>
         </div>
     </div>
 

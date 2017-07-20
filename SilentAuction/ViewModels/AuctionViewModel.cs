@@ -14,6 +14,8 @@ namespace SilentAuction.ViewModels
 
         public string TotalItems { get; set; }
 
-        public List<SelectListItem> Pages { get; set; }
+        public List<SelectListGroup> Pages { get; set; }
+
+        public string NumberOfItems { get; set; }
     }
 }
