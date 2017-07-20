@@ -1,4 +1,5 @@
-﻿using SilentAuction.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SilentAuction.Models;
 using System.Collections.Generic;
 
 namespace SilentAuction.ViewModels
@@ -7,8 +8,12 @@ namespace SilentAuction.ViewModels
     {
         public int Id { get; set; }
 
-        public IList<Listing> Listings { get; set; } = new List<Listing>();
+        public PaginatedList<Listing> Listings { get; set; }
 
         public string SearchQuery { get; set; }
+
+        public string TotalItems { get; set; }
+
+        public List<SelectListItem> Pages { get; set; }
     }
 }

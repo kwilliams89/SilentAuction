@@ -19,6 +19,15 @@
                         <input type="submit" value="Search" class="btn btn-default btn-block" />
                     </div>
                 </form>
+                <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
+                    <div>
+                        <label for="Pages">Items Per Page</label>
+                        <select asp-for="Pages">
+                            <option value="Five">5</option>
+                            <option value="Ten">10</option>
+                        </select>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -56,6 +65,28 @@
             </div>
         </div>
     }
+
+    @{
+        var prevDisabled = !Model.Listings.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Listings.HasNextPage ? "disabled" : "";
+    }
+
+    <a asp-controller="Auctions"
+       asp-action="SilentAuction"
+       asp-route-id="@Model.Id"
+       asp-route-pageIndex="@(Model.Listings.PageIndex - 1)"
+       asp-route-searchQuery="@Model.SearchQuery"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-controller="Auctions"
+       asp-action="SilentAuction"
+       asp-route-id="@Model.Id"
+       asp-route-pageIndex="@(Model.Listings.PageIndex + 1)"
+       asp-route-searchQuery="@Model.SearchQuery"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
 </div>
 
 
