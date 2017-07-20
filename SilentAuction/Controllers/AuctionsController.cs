@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,6 +35,9 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
+            var auction = AuctionContext.Auctions.SingleOrDefaultAsync(auction0 => auction0.Id == id).Result;
+            var endDate = auction.EndDate;
+            var name = auction.Name;
 
             var listingsQuery =
                 from listing in AuctionContext.Listings
@@ -48,15 +54,31 @@ namespace SilentAuction.Controllers
             }
 
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
-            int pageSize = 5;
-            var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ??1, pageSize);
-            var totalItems = listings.Count;
+
+            // List of items per page
+            var pageSelectList = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem {Selected = true, Text = "Five", Value = "5"},
+                new SelectListItem {Selected = false, Text = "Ten" , Value = "10"}
+            }
+            );
+
+            this.ViewBag.pageSelectList = new SelectList(pageSelectList, "Value", "Text");
+
+            // items per page shown
+            var pageSize = 5;
+
+            // show items per page through PaginatedList
+            var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize);
+
+
             var viewModel = new AuctionViewModel
             {
                 Id = id.Value,
                 Listings = listings,
                 SearchQuery = searchQuery,
-                TotalItems = totalItems.ToString()       
+                AuctionEndDate = endDate.ToString("D", new CultureInfo("en-EN")),
+                AuctionName = name
             };
 
             return View(viewModel);
