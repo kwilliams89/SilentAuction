@@ -17,7 +17,7 @@ namespace SilentAuction.ViewModels
 
         public string AuctionEndDate { get; set; }
 
-        public IList<SelectListItem> PageList { get; set; }
+        public IEnumerable<SelectListItem> PageList { get; set; }
 
     }
 }

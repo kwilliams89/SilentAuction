@@ -32,7 +32,24 @@
         <div class="col-md-2">
             <div class="panel panel-default">
                 <label for="Pages">Items Per Page</label>
-                @Html.DropDownListFor(m => m.PageList, (SelectList)ViewBag.pageSelectList)
+                @{
+                    List<SelectListItem> listItems = new List<SelectListItem>();
+                    listItems.Add(new SelectListItem
+                    {
+                        Text = "5",
+                        Value = "1",
+                        Selected = true
+                    });
+                    listItems.Add(new SelectListItem
+                    {
+                        Text = "10",
+                        Value = "1",
+                        Selected = false
+                    });
+                }
+
+                @Html.DropDownListFor(model => model.PageList, listItems, "Items Per Page")
+                <input type="submit" value="Submit" class="btn btn-default btn-block" />
             </div>
         </div>
     </div>
