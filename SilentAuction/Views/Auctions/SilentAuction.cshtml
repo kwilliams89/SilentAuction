@@ -11,8 +11,8 @@
 
     <div class="hero-unit text-center panel panel-heading">
         <h1>@Model.AuctionName</h1>
-        <h4>End Date: @Model.AuctionEndDate</h4>
-        <h6 id="time"></h6>
+        <h2>End Date: @Model.AuctionEndDate</h2>
+        <div id="time"></div>
     </div>
 
     <div class="row">
@@ -74,11 +74,27 @@
 
 @section Scripts {
     <script type="text/javascript">
-        var myVar = setInterval(myTimer, 1000);
+        @{
+        string endDatestring = Model.AuctionEndDate;
+        int indexOfSecondWordStart = endDatestring.IndexOf(" ") + 1;
+        endDatestring = endDatestring.Substring(indexOfSecondWordStart);
+        @Html.Raw("var endDateString = '")
+        @Html.Raw(endDatestring)
+        @Html.Raw("';")
+    }
+        var timerToEnd = setInterval(myTimer, 1000);
+        var endDate = new Date(Date.parse(endDateString));
 
         function myTimer() {
-            var d = new Date();
-            document.getElementById("time").innerHTML = d.toLocaleTimeString();
+            var currentDate = new Date();
+            var oneDay = 1000 * 60 * 60 * 24;
+            var differenceInMilliseconds = endDate.getTime() - currentDate.getTime();
+            var days = Math.round(differenceInMilliseconds / oneDay);
+            var hours = Math.round(differenceInMilliseconds / (oneDay / 24));
+            var minutes = Math.round(differenceInMilliseconds / (oneDay / 24 / 60));
+            var seconds = Math.round(differenceInMilliseconds / (oneDay / 24 / 60 / 60));
+
+            document.getElementById("time").innerHTML = "<h3><strong>Time Till Auction End:</strong> Days: " + days + " Hours: " + hours + " Minutes: " + minutes + " Seconds: " + seconds + "</h3>";
         }
     </script>
 }
