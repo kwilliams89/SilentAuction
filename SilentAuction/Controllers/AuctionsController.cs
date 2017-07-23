@@ -27,8 +27,7 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-
-        public async Task<IActionResult> SilentAuction(int? id, string searchQuery, int? pageIndex)
+        public async Task<IActionResult> SilentAuction(int? id, string searchQuery, int? pageIndex, int? pageSize)
         {
             if (id == null)
             {
@@ -66,11 +65,11 @@ namespace SilentAuction.Controllers
             ViewBag.Locations = ItemsPerPage;
 
             // Set Page Size
-            var pageSize = 5;
+            //var pageSize = 5;
 
             // show items per page through PaginatedList
-            var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize);
-
+            //var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize);
+            var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize ?? 5);
 
             var viewModel = new AuctionViewModel
             {
