@@ -1,5 +1,7 @@
-﻿using SilentAuction.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SilentAuction.Models;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SilentAuction.ViewModels
 {
@@ -14,5 +16,8 @@ namespace SilentAuction.ViewModels
         public string AuctionName { get; set; }
 
         public string AuctionEndDate { get; set; }
+
     }
 }
+
+

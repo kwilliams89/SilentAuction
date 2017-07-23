@@ -29,10 +29,39 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-2">Items Per Page</label>
+                    <a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 5 })" class="btn btn-default">5</a>
+                    <a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 10 })" class="btn btn-default">10</a>
+                    @*<select class="col-md-4">
+                        <option></option>
+                        <option><a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 5 })">5</a></option>
+                        <option><a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 10 })">10</a></option>
+                    </select>*@
+                </div>
+            </div>
+
+            @*<div class="col-md-2">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
+                                <div>
+                                    <label for="itemsPerPage">Items Per Page</label>
+                                    @Html.DropDownList("ItemsPerPage", (IEnumerable<SelectListItem>)ViewBag.Locations, new { id = "ddlLocations", @class = "form-control" })
+                                    <input type="submit" value="Submit" class="btn btn-default btn-block" />
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                </div>
+            </div>*@
+        </div>
     </div>
 
     @foreach (var listing in Model.Listings)
-    {
+            {
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="media">
@@ -54,11 +83,10 @@
                     </div>
                     <div class="media-body">
                         <ul>
-                            <li>Minimum Bid: @Html.DisplayFor(modelItem => listing.MinimumBid)</li>
-                            <li>Retail Value: @Html.DisplayFor(modelItem => listing.Item.RetailPrice)</li>
-                            <li>@Html.DisplayFor(modelItem => listing.Item.Name)</li>
+                            <li>Starting Bid: @Html.DisplayFor(modelItem => listing.Item.Name)</li>
                             <li>@Html.DisplayFor(modelItem => listing.Item.Description)</li>
-                            <li>Bidding Increment: @Html.DisplayFor(modelItem => listing.Increment)</li>                      
+                            <li>Increment: @Html.DisplayFor(modelItem => listing.StartingBid)</li>
+                            <li>@Html.DisplayFor(modelItem => listing.ItemId)</li>
                         </ul>
                     </div>
                 </div>
