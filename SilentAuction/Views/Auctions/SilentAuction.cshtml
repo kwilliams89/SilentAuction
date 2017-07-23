@@ -29,27 +29,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="panel panel-default">
-                <label for="Pages">Items Per Page</label>
-                @{
-                    List<SelectListItem> listItems = new List<SelectListItem>();
-                    listItems.Add(new SelectListItem
-                    {
-                        Text = "5",
-                        Value = "1",
-                        Selected = true
-                    });
-                    listItems.Add(new SelectListItem
-                    {
-                        Text = "10",
-                        Value = "1",
-                        Selected = false
-                    });
-                }
-
-                @Html.DropDownListFor(model => model.PageList, listItems, "Items Per Page")
-                <input type="submit" value="Submit" class="btn btn-default btn-block" />
+        <div class="row">
+            <div class="col-md-2">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
+                            <div>
+                                <label for="itemsPerPage">Items Per Page</label>
+                                @Html.DropDownList("ItemsPerPage", (IEnumerable<SelectListItem>)ViewBag.Locations, new { id = "ddlLocations", @class = "form-control" })
+                                <input type="submit" value="Submit" class="btn btn-default btn-block" />
+                            </div>
+                        </form>
+                    </div>
+                    </div>
             </div>
         </div>
     </div>

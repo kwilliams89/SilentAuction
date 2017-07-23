@@ -55,19 +55,17 @@ namespace SilentAuction.Controllers
 
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
 
-            // List of items per page
-            //var pageSelectList = new SelectList(new List<SelectListItem>
-            //{
+            // Creating ItemsPerPage list
+            List<SelectListItem> ItemsPerPage = new List<SelectListItem>()
+            {
+                new SelectListItem { Selected=true, Text = "5", Value = "1" },
+                new SelectListItem { Text = "10", Value = "2" }
+            };
 
-            //   new SelectListItem {Selected = true, Text = "Five", Value = "0"},
-            //   new SelectListItem {Selected = false, Text = "Ten" , Value = "1"}
-            //}
-            //);
+            // Assigning ItemsPerPage list to ViewBag
+            ViewBag.Locations = ItemsPerPage;
 
-            //ViewBag.PageList = pageSelectList;
-            //this.ViewBag.pageSelectList = new SelectList(pageSelectList, "Value", "Text");
-
-            // items per page shown
+            // Set Page Size
             var pageSize = 5;
 
             // show items per page through PaginatedList
