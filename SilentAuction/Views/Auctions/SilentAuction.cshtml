@@ -93,6 +93,29 @@
             </div>
         </div>
                                 }
+
+        @{
+        var prevDisabled = !Model.Listings.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Listings.HasNextPage ? "disabled" : "";
+            }
+    
+        <a asp-controller="Auctions"
+             asp-action="SilentAuction"
+             asp-route-id="@Model.Id"
+             asp-route-pageIndex="@(Model.Listings.PageIndex - 1)"
+             asp-route-searchQuery="@Model.SearchQuery"
+             class="btn btn-default @prevDisabled">
+                Previous
+        
+    </a>
+        <a asp-controller="Auctions"
+             asp-action="SilentAuction"
+             asp-route-id="@Model.Id"
+             asp-route-pageIndex="@(Model.Listings.PageIndex + 1)"
+             asp-route-searchQuery="@Model.SearchQuery"
+             class="btn btn-default @nextDisabled">
+                Next
+    </a>
 </div>
 
 
