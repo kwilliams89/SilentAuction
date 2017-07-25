@@ -27,13 +27,14 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-        public async Task<IActionResult> SilentAuction(int? id, string searchQuery, int? pageIndex, int? pageSize)
+        public async Task<IActionResult> SilentAuction(int? id, int? categoryID, string searchQuery, int? pageIndex, int? pageSize)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            var categories = (from Name in AuctionContext.Catagories select Name).ToList();
             var auction = AuctionContext.Auctions.SingleOrDefaultAsync(auction0 => auction0.Id == id).Result;
             var endDate = auction.EndDate;
             var name = auction.Name;
@@ -50,6 +51,15 @@ namespace SilentAuction.Controllers
             {
                 listingsQuery = listingsQuery.Where(listing0 => listing0.Item.Name.Contains(searchQuery)
                     || listing0.Item.Description.Contains(searchQuery));
+            }
+
+            if (!categoryID.Equals(null) && !categoryID.Equals(-1))
+            {
+                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.CatagoryId.Equals(categoryID));
+            }
+            else
+            {
+                categoryID = -1;
             }
 
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
@@ -74,6 +84,8 @@ namespace SilentAuction.Controllers
             var viewModel = new AuctionViewModel
             {
                 Id = id.Value,
+                CategoryID = categoryID.Value,
+                Categories = categories,
                 Listings = listings,
                 SearchQuery = searchQuery,
                 AuctionEndDate = endDate.ToString("D", new CultureInfo("en-EN")),

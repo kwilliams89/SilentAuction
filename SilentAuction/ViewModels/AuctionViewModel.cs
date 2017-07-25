@@ -9,6 +9,10 @@ namespace SilentAuction.ViewModels
     {
         public int Id { get; set; }
 
+        public int CategoryID { get; set; }
+
+        public IList<Catagory> Categories { get; set; }
+
         public PaginatedList<Listing> Listings { get; set; }
 
         public string SearchQuery { get; set; }
