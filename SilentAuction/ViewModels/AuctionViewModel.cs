@@ -21,6 +21,7 @@ namespace SilentAuction.ViewModels
 
         public string AuctionEndDate { get; set; }
 
+        public int? PageSize { get; set; }
     }
 }
 

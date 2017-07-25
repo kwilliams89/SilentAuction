@@ -101,6 +101,7 @@
              asp-route-id="@Model.Id"
              asp-route-pageIndex="@(Model.Listings.PageIndex - 1)"
              asp-route-searchQuery="@Model.SearchQuery"
+             asp-route-pageSize="@Model.PageSize"
              class="btn btn-default @prevDisabled">
                 Previous
         
@@ -110,6 +111,7 @@
              asp-route-id="@Model.Id"
              asp-route-pageIndex="@(Model.Listings.PageIndex + 1)"
              asp-route-searchQuery="@Model.SearchQuery"
+             asp-route-pageSize="@Model.PageSize"
              class="btn btn-default @nextDisabled">
                 Next
     </a>

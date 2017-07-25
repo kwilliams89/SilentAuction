@@ -64,6 +64,8 @@ namespace SilentAuction.Controllers
 
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
 
+            
+
             // Creating ItemsPerPage list
             List<SelectListItem> ItemsPerPage = new List<SelectListItem>()
             {
@@ -73,9 +75,6 @@ namespace SilentAuction.Controllers
 
             // Assigning ItemsPerPage list to ViewBag
             ViewBag.Locations = ItemsPerPage;
-
-            // Set Page Size
-            //var pageSize = 5;
 
             // show items per page through PaginatedList
             //var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize);
@@ -89,7 +88,8 @@ namespace SilentAuction.Controllers
                 Listings = listings,
                 SearchQuery = searchQuery,
                 AuctionEndDate = endDate.ToString("D", new CultureInfo("en-EN")),
-                AuctionName = name
+                AuctionName = name,
+                PageSize = pageSize
             };
 
             return View(viewModel);
