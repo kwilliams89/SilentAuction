@@ -29,11 +29,11 @@ namespace SilentAuction.Models
         public string Description { get; set; }
 
         [Required]
-        [ForeignKey("Catagory")]
-        [Display(Name = "Catagory")]
-        public int CatagoryId { get; set; }
+        [ForeignKey(nameof(Models.Category))]
+        [Display(Name = "Category")]
+        public int CategoryId { get; set; }
 
-        public virtual Catagory Catagory { get; set; }
+        public virtual Category Category { get; set; }
 
         [Required]
         [Display(Name = "Retail Price")]
