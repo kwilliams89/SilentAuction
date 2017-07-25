@@ -27,14 +27,14 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-        public async Task<IActionResult> SilentAuction(int? id, int? categoryID, string searchQuery, int? pageIndex, int? pageSize)
+        public async Task<IActionResult> SilentAuction(int? id, int? categoryId, string searchQuery, int? pageIndex, int? pageSize)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var categories = (from Name in AuctionContext.Catagories select Name).ToList();
+            var categories = (from Name in AuctionContext.Categories select Name).ToList();
             var auction = AuctionContext.Auctions.SingleOrDefaultAsync(auction0 => auction0.Id == id).Result;
             var endDate = auction.EndDate;
             var name = auction.Name;
@@ -44,6 +44,10 @@ namespace SilentAuction.Controllers
                     .AsNoTracking()
                     .Include(listing0 => listing0.Item)
                         .ThenInclude(itemMedia0 => itemMedia0.ItemMedia)
+                    .Include(listing0 => listing0.Item)
+                        .ThenInclude(itemSponsor => itemSponsor.Sponsor)
+                    .Include(listing0 => listing0.Item)
+                        .ThenInclude(itemCategory => itemCategory.Category)
                 where listing.AuctionId == id
                 select listing;
 
@@ -53,18 +57,18 @@ namespace SilentAuction.Controllers
                     || listing0.Item.Description.Contains(searchQuery));
             }
 
-            if (!categoryID.Equals(null) && !categoryID.Equals(-1))
+            if (!categoryId.Equals(null) && !categoryId.Equals(-1))
             {
-                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.CatagoryId.Equals(categoryID));
+                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.CategoryId.Equals(categoryId));
             }
             else
             {
-                categoryID = -1;
+                categoryId = -1;
             }
 
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
 
-            
+
 
             // Creating ItemsPerPage list
             List<SelectListItem> ItemsPerPage = new List<SelectListItem>()
@@ -83,7 +87,7 @@ namespace SilentAuction.Controllers
             var viewModel = new AuctionViewModel
             {
                 Id = id.Value,
-                CategoryID = categoryID.Value,
+                CategoryId = categoryId.Value,
                 Categories = categories,
                 Listings = listings,
                 SearchQuery = searchQuery,

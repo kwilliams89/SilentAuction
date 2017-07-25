@@ -1,5 +1,6 @@
 @using SilentAuction.ViewModels;
 @using SilentAuction.Controllers;
+@using System.Globalization;
 @model AuctionViewModel
 @{
     ViewData["Title"] = "Silent Auction";
@@ -41,17 +42,17 @@
     </div>
 
     <div class="row">
-            <div class="form-group">
-                <ul class="nav nav-pills">
-                    <li class="@(Model.CategoryID == null ? "active" : null)"><a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions")">All Listings</a></li>
-                    @foreach (var category in Model.Categories)
-                    {
-                        <li class="@(category.Id == Model.CategoryID ? "active" : null)">
-                            <a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { categoryId = category.Id, searchQuery = Model.SearchQuery })">@category.Name</a>
-                        </li>
-                    }
-                </ul>
-            </div>
+        <div class="form-group">
+            <ul class="nav nav-pills">
+                <li class="@(Model.CategoryId == null ? "active" : null)"><a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions")">All Listings</a></li>
+                @foreach (var category in Model.Categories)
+                {
+                    <li class="@(category.Id == Model.CategoryId ? "active" : null)">
+                        <a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { categoryId = category.Id, searchQuery = Model.SearchQuery })">@category.Name</a>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 
 
@@ -76,44 +77,54 @@
                                 <img class="media-object" src="~/images/no-image.jpg" />
                             }
                         </div>
+                        <p>Category: @listing.Item.Category.Name</p>
                     </div>
                     <div class="media-body">
-                        <ul>
-                            <li>Minimum Bid: @Html.DisplayFor(modelItem => listing.MinimumBid)</li>
-                            <li>Retail Value: @Html.DisplayFor(modelItem => listing.Item.RetailPrice)</li>
-                            <li>@Html.DisplayFor(modelItem => listing.Item.Name)</li>
-                            <li>@Html.DisplayFor(modelItem => listing.Item.Description)</li>
-                            <li>Bidding Increment: @Html.DisplayFor(modelItem => listing.Increment)</li>                      
-                        </ul>
+
+                        <div class="col-md-6"> 
+                            <p>Name: @Html.DisplayFor(modelItem => listing.Item.Name)</p>
+                            <p>Description: @Html.DisplayFor(modelItem => listing.Item.Description)</p>
+                            <p>Sponsor: @Html.DisplayFor(modelItem => listing.Item.Sponsor.Name)</p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <p>Retail Price: @listing.Item.RetailPrice.ToString("C", new CultureInfo("th-TH"))</p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <p>Current Bid: @listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
                                 }
 
-        @{
+    @{
         var prevDisabled = !Model.Listings.HasPreviousPage ? "disabled" : "";
         var nextDisabled = !Model.Listings.HasNextPage ? "disabled" : "";
-            }
-    
-        <a asp-controller="Auctions"
-             asp-action="SilentAuction"
-             asp-route-id="@Model.Id"
-             asp-route-pageIndex="@(Model.Listings.PageIndex - 1)"
-             asp-route-searchQuery="@Model.SearchQuery"
-             asp-route-pageSize="@Model.PageSize"
-             class="btn btn-default @prevDisabled">
-                Previous
-        
+    }
+
+    <a asp-controller="Auctions"
+       asp-action="SilentAuction"
+       asp-route-id="@Model.Id"
+       asp-route-categoryId="@Model.CategoryId"
+       asp-route-pageIndex="@(Model.Listings.PageIndex - 1)"
+       asp-route-searchQuery="@Model.SearchQuery"
+       asp-route-pageSize="@Model.PageSize"
+       class="btn btn-default @prevDisabled">
+        Previous
+
     </a>
-        <a asp-controller="Auctions"
-             asp-action="SilentAuction"
-             asp-route-id="@Model.Id"
-             asp-route-pageIndex="@(Model.Listings.PageIndex + 1)"
-             asp-route-searchQuery="@Model.SearchQuery"
-             asp-route-pageSize="@Model.PageSize"
-             class="btn btn-default @nextDisabled">
-                Next
+    <a asp-controller="Auctions"
+       asp-action="SilentAuction"
+       asp-route-id="@Model.Id"
+       asp-route-categoryId="@Model.CategoryId"
+       asp-route-pageIndex="@(Model.Listings.PageIndex + 1)"
+       asp-route-searchQuery="@Model.SearchQuery"
+       asp-route-pageSize="@Model.PageSize"
+       class="btn btn-default @nextDisabled">
+        Next
     </a>
 </div>
 

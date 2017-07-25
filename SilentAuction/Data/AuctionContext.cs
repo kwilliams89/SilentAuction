@@ -26,7 +26,7 @@ namespace SilentAuction.Data
 
         public DbSet<BidHistory> BidHistories { get; set; }
 
-        public DbSet<Catagory> Catagories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public DbSet<Role> Roles { get; set; }
 
