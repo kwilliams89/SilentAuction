@@ -110,22 +110,22 @@ namespace SilentAuction.Data
             // Listings
             var listings = new Listing[]
             {
-                new Listing { StartingBid = 20, Increment = 5, AuctionId = auctions[0].Id, ItemId = items[0].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[1].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[2].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[3].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[4].Id},
+                new Listing { MinimumBid = 20, Increment = 5, AuctionId = auctions[0].Id, ItemId = items[0].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[1].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[2].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[3].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[4].Id},
 
-                new Listing { StartingBid = 20, Increment = 5, AuctionId = auctions[0].Id, ItemId = items[5].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[6].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[7].Id},
+                new Listing { MinimumBid = 20, Increment = 5, AuctionId = auctions[0].Id, ItemId = items[5].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[6].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[7].Id},
 
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[8].Id},
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[9].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[8].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[9].Id},
 
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[10].Id},
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[10].Id},
 
-                new Listing { StartingBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[11].Id}
+                new Listing { MinimumBid = 10, Increment = 2, AuctionId = auctions[0].Id, ItemId = items[11].Id}
             };
             foreach (Listing listing in listings)
             {
