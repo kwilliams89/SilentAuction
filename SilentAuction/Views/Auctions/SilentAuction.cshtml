@@ -35,28 +35,8 @@
                     <label class="col-md-2">Items Per Page</label>
                     <a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 5 })" class="btn btn-default">5</a>
                     <a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 10 })" class="btn btn-default">10</a>
-                    @*<select class="col-md-4">
-                        <option></option>
-                        <option><a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 5 })">5</a></option>
-                        <option><a href="@Url.Action(nameof(AuctionsController.SilentAuction), "Auctions", new { searchQuery = Model.SearchQuery, pageSize = 10 })">10</a></option>
-                    </select>*@
                 </div>
             </div>
-
-            @*<div class="col-md-2">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <form asp-controller="Auctions" asp-action="SilentAuction" method="get">
-                                <div>
-                                    <label for="itemsPerPage">Items Per Page</label>
-                                    @Html.DropDownList("ItemsPerPage", (IEnumerable<SelectListItem>)ViewBag.Locations, new { id = "ddlLocations", @class = "form-control" })
-                                    <input type="submit" value="Submit" class="btn btn-default btn-block" />
-                                </div>
-                            </form>
-                        </div>
-                        </div>
-                </div>
-            </div>*@
         </div>
     </div>
 
@@ -159,13 +139,22 @@
         function myTimer() {
             var currentDate = new Date();
             var oneDay = 1000 * 60 * 60 * 24;
+            var oneHour = 1000 * 60 * 60;
+            var oneMinuet = 1000 * 60;
             var differenceInMilliseconds = endDate.getTime() - currentDate.getTime();
-            var days = Math.round(differenceInMilliseconds / oneDay);
-            var hours = Math.round(differenceInMilliseconds / (oneDay / 24));
-            var minutes = Math.round(differenceInMilliseconds / (oneDay / 24 / 60));
-            var seconds = Math.round(differenceInMilliseconds / (oneDay / 24 / 60 / 60));
 
-            document.getElementById("time").innerHTML = "<h3><strong>Time Till Auction End:</strong> Days: " + days + " Hours: " + hours + " Minutes: " + minutes + " Seconds: " + seconds + "</h3>";
+
+            var days = Math.round(differenceInMilliseconds / oneDay);
+            var hours = Math.round((differenceInMilliseconds % oneDay) / oneHour);
+            var minutes = Math.round(((differenceInMilliseconds % oneDay) % oneHour) / oneMinuet);
+            var seconds = Math.round((((differenceInMilliseconds % oneDay) % oneHour) % oneMinuet) / 1000);
+
+           // var days = Math.round(differenceInMilliseconds / oneDay);
+            //var hours = Math.round(differenceInMilliseconds / (oneDay / 24));
+            //var minutes = Math.round(differenceInMilliseconds / (oneDay / 24 / 60));
+           // var seconds = Math.round(differenceInMilliseconds / (oneDay / 24 / 60 / 60));
+
+            document.getElementById("time").innerHTML = "<h3><strong>Time Till Auction End:</strong> " + days + ":" + hours + ":" + minutes + ":" + seconds + "</h3>";
         }
     </script>
 }
