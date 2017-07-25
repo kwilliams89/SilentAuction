@@ -152,8 +152,6 @@ namespace SilentAuction.Data
             };
             context.Media.Add(poolVillaTisara1);
 
-            context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara1 });
-
             var poolVillaTisara2 = new Media
             {
                 FileName = "poolVillaTisara2.jpg",
@@ -162,7 +160,54 @@ namespace SilentAuction.Data
             };
             context.Media.Add(poolVillaTisara2);
 
+            var andaraResortBBQ = new Media
+            {
+                FileName = "Andara18.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/Andara18.jpg"))
+            };
+            context.Media.Add(andaraResortBBQ);
+
+            var leMeridien = new Media
+            {
+                FileName = "Le-Meridien-Phuket-Beach-Resort-2-Dinners_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/Le-Meridien-Phuket-Beach-Resort-2-Dinners_1900x1267.jpg"))
+            };
+            context.Media.Add(leMeridien);
+
+            var movenpickResort = new Media
+            {
+                FileName = "Movenpick-Resort-Bangtao-Beach_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/Movenpick-Resort-Bangtao-Beach_1900x1267.jpg"))
+            };
+            context.Media.Add(movenpickResort);
+
+            var surinResort = new Media
+            {
+                FileName = "re_The-Surin-1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/re_The-Surin-1900x1267.jpg"))
+            };
+            context.Media.Add(surinResort);
+
+            var novotelKamala = new Media
+            {
+                FileName = "novotel-kamala.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/novotel-kamala.jpg"))
+            };
+            context.Media.Add(novotelKamala);
+
+            //context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara1 });
             context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara2 });
+            context.ItemMedia.Add(new ItemMedia { Item = items[1], Media = leMeridien });
+            context.ItemMedia.Add(new ItemMedia { Item = items[2], Media = andaraResortBBQ });
+            context.ItemMedia.Add(new ItemMedia { Item = items[3], Media = surinResort });
+            context.ItemMedia.Add(new ItemMedia { Item = items[4], Media = movenpickResort });
+
+            context.ItemMedia.Add(new ItemMedia { Item = items[11], Media = novotelKamala });
 
             context.SaveChanges();
         }
