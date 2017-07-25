@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using SilentAuction.ViewModels;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,11 +19,35 @@ namespace SilentAuction.Controllers
             _context = context;    
         }
 
+        private static ItemViewModel ToViewModel(Item item)
+        {
+            return new ItemViewModel
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Sponsor = item.Sponsor.Name,
+                Description = item.Description,
+                Catagory = item.Catagory.Name,
+                RetailPrice = item.RetailPrice.ToString("C", new CultureInfo("th-TH"))
+
+            };
+        }
+
         // GET: Items
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.Catagory);
-            return View(await auctionContext.ToListAsync());
+            var auctionContext = _context.Items.Include(item => item.Catagory).Include(l => l.Sponsor);
+            var itemsList = auctionContext.ToList();
+
+            var viewModelsQuery =
+                from items in itemsList
+                select ToViewModel(items);
+
+            var viewModels = viewModelsQuery.ToList();
+            return View(viewModels);
+
+           // var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.Catagory);
+            //return View(await auctionContext.ToListAsync());
         }
 
         // GET: Items/Details/5
