@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,13 +27,14 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-        public IActionResult SilentAuction(int? id, string searchQuery)
+        public async Task<IActionResult> SilentAuction(int? id, int? categoryID, string searchQuery, int? pageIndex, int? pageSize)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            var categories = (from Name in AuctionContext.Catagories select Name).ToList();
             var auction = AuctionContext.Auctions.SingleOrDefaultAsync(auction0 => auction0.Id == id).Result;
             var endDate = auction.EndDate;
             var name = auction.Name;
@@ -50,12 +53,39 @@ namespace SilentAuction.Controllers
                     || listing0.Item.Description.Contains(searchQuery));
             }
 
+            if (!categoryID.Equals(null) && !categoryID.Equals(-1))
+            {
+                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.CatagoryId.Equals(categoryID));
+            }
+            else
+            {
+                categoryID = -1;
+            }
+
             listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
 
-            var listings = listingsQuery.ToList();
+            // Creating ItemsPerPage list
+            List<SelectListItem> ItemsPerPage = new List<SelectListItem>()
+            {
+                new SelectListItem { Selected=true, Text = "5", Value = "1" },
+                new SelectListItem { Text = "10", Value = "2" }
+            };
+
+            // Assigning ItemsPerPage list to ViewBag
+            ViewBag.Locations = ItemsPerPage;
+
+            // Set Page Size
+            //var pageSize = 5;
+
+            // show items per page through PaginatedList
+            //var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize);
+            var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize ?? 5);
+
             var viewModel = new AuctionViewModel
             {
                 Id = id.Value,
+                CategoryID = categoryID.Value,
+                Categories = categories,
                 Listings = listings,
                 SearchQuery = searchQuery,
                 AuctionEndDate = endDate.ToString("D", new CultureInfo("en-EN")),

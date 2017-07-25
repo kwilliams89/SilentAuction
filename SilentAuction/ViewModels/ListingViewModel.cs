@@ -11,7 +11,7 @@ namespace SilentAuction.ViewModels
 
         public string Item { get; set; }
 
-        public string StartingBid { get; set; }
+        public string MinimumBid { get; set; }
 
         public string Increment { get; set; }
 

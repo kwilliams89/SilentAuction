@@ -28,7 +28,7 @@ namespace SilentAuction.Controllers
                 Item = listing.Item.Name,
                 Auction = listing.Auction.Name,
                 Increment = listing.Increment.ToString("C", new CultureInfo("th-TH")),
-                StartingBid = listing.StartingBid.ToString("C", new CultureInfo("th-TH"))
+                MinimumBid = listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))
             };
         }
 
@@ -95,9 +95,9 @@ namespace SilentAuction.Controllers
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(viewModel.StartingBid))
+                    if (string.IsNullOrWhiteSpace(viewModel.MinimumBid))
                     {
-                        ModelState.AddModelError("StartingBid", "The Starting bid is empty");
+                        ModelState.AddModelError("MinimumBid", "The Starting bid is empty");
                     }
                     else
                     {
@@ -119,9 +119,9 @@ namespace SilentAuction.Controllers
                                 }
                                 else
                                 {
-                                    if (!decimal.TryParse(viewModel.StartingBid, out var startingBid))
+                                    if (!decimal.TryParse(viewModel.MinimumBid, out var MinimumBid))
                                     {
-                                        ModelState.AddModelError("StartingBid", "Couldn't parse Starting Bid");
+                                        ModelState.AddModelError("MinimumBid", "Couldn't parse Starting Bid");
                                     }
                                     else
                                     {
@@ -135,7 +135,7 @@ namespace SilentAuction.Controllers
                                             {
                                                 AuctionId = auctionId,
                                                 ItemId = itemId,
-                                                StartingBid = startingBid,
+                                                MinimumBid = MinimumBid,
                                                 Increment = increment
                                             };
 
@@ -181,7 +181,7 @@ namespace SilentAuction.Controllers
                 Item = itemName,
                 Auction = auctionName,
                 Increment = listing.Increment.ToString("C", new CultureInfo("th-TH")),
-                StartingBid = listing.StartingBid.ToString("C", new CultureInfo("th-TH"))
+                MinimumBid = listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))
             };
 
             viewModel.Auctions = new SelectList(_context.Auctions, "Id", "Name", viewModel.Auction);
@@ -213,9 +213,9 @@ namespace SilentAuction.Controllers
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(viewModel.StartingBid))
+                    if (string.IsNullOrWhiteSpace(viewModel.MinimumBid))
                     {
-                        ModelState.AddModelError("StartingBid", "The Starting bid is empty");
+                        ModelState.AddModelError("MinimumBid", "The Starting bid is empty");
                     }
                     else
                     {
@@ -237,14 +237,14 @@ namespace SilentAuction.Controllers
                                 }
                                 else
                                 {
-                                    string startingBidInput = viewModel.StartingBid;
-                                    if (Regex.IsMatch(startingBidInput, @"^฿"))
+                                    string MinimumBidInput = viewModel.MinimumBid;
+                                    if (Regex.IsMatch(MinimumBidInput, @"^฿"))
                                     {
-                                        startingBidInput = startingBidInput.Substring(1);
+                                        MinimumBidInput = MinimumBidInput.Substring(1);
                                     }
-                                    if (!decimal.TryParse(startingBidInput, out var startingBid))
+                                    if (!decimal.TryParse(MinimumBidInput, out var MinimumBid))
                                     {
-                                        ModelState.AddModelError("StartingBid", "Couldn't parse Starting Bid");
+                                        ModelState.AddModelError("MinimumBid", "Couldn't parse Starting Bid");
                                     }
                                     else
                                     {
@@ -263,7 +263,7 @@ namespace SilentAuction.Controllers
 
                                             listing.ItemId = itemId;
                                             listing.AuctionId = auctionId;
-                                            listing.StartingBid = startingBid;
+                                            listing.MinimumBid = MinimumBid;
                                             listing.Increment = increment;
 
                                             try
