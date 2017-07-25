@@ -157,13 +157,22 @@
         function myTimer() {
             var currentDate = new Date();
             var oneDay = 1000 * 60 * 60 * 24;
+            var oneHour = 1000 * 60 * 60;
+            var oneMinuet = 1000 * 60;
             var differenceInMilliseconds = endDate.getTime() - currentDate.getTime();
-            var days = Math.round(differenceInMilliseconds / oneDay);
-            var hours = Math.round(differenceInMilliseconds / (oneDay / 24));
-            var minutes = Math.round(differenceInMilliseconds / (oneDay / 24 / 60));
-            var seconds = Math.round(differenceInMilliseconds / (oneDay / 24 / 60 / 60));
 
-            document.getElementById("time").innerHTML = "<h3><strong>Time Till Auction End:</strong> Days: " + days + " Hours: " + hours + " Minutes: " + minutes + " Seconds: " + seconds + "</h3>";
+
+            var days = Math.round(differenceInMilliseconds / oneDay);
+            var hours = Math.round((differenceInMilliseconds % oneDay) / oneHour);
+            var minutes = Math.round(((differenceInMilliseconds % oneDay) % oneHour) / oneMinuet);
+            var seconds = Math.round((((differenceInMilliseconds % oneDay) % oneHour) % oneMinuet) / 1000);
+
+           // var days = Math.round(differenceInMilliseconds / oneDay);
+            //var hours = Math.round(differenceInMilliseconds / (oneDay / 24));
+            //var minutes = Math.round(differenceInMilliseconds / (oneDay / 24 / 60));
+           // var seconds = Math.round(differenceInMilliseconds / (oneDay / 24 / 60 / 60));
+
+            document.getElementById("time").innerHTML = "<h3><strong>Time Till Auction End:</strong> " + days + ":" + hours + ":" + minutes + ":" + seconds + "</h3>";
         }
     </script>
 }
