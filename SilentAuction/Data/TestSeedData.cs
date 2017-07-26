@@ -200,15 +200,67 @@ namespace SilentAuction.Data
             };
             context.Media.Add(novotelKamala);
 
+            var eternitySpa = new Media
+            {
+                FileName = "Eternity-Spa-Package_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/Eternity-Spa-Package_1900x1267.jpg"))
+            };
+            context.Media.Add(eternitySpa);
+
+            var siamSupper = new Media
+            {
+                FileName = "siam-supper-club_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/siam-supper-club_1900x1267.jpg"))
+            };
+            context.Media.Add(siamSupper);
+
+            var ceilingSpeaker = new Media
+            {
+                FileName = "AccentPLUS1-Ceiling-Speaker-AP1C_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/AccentPLUS1-Ceiling-Speaker-AP1C_1900x1267.jpg"))
+            };
+            context.Media.Add(ceilingSpeaker);
+
+            var adPhuketNewsThai = new Media
+            {
+                FileName = "KPK_GiftVoucher-ForKhaoPhuket_Oct-27-2017_Lowres_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/KPK_GiftVoucher-ForKhaoPhuket_Oct-27-2017_Lowres_1900x1267.jpg"))
+            };
+            context.Media.Add(adPhuketNewsThai);
+
+            var adPhuketNewsRussian = new Media
+            {
+                FileName = "NP_GiftVoucher-Novostia-Phuket_Oct-20-2017_Lowres_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/NP_GiftVoucher-Novostia-Phuket_Oct-20-2017_Lowres_1900x1267.jpg"))
+            };
+            context.Media.Add(adPhuketNewsRussian);
+
+            var tvAd = new Media
+            {
+                FileName = "TPN_GiftVoucher-ForPhuketNewsTV_Oct-27-2017_Lowres_1_1900x1267.jpg",
+                Type = "image/jpeg",
+                Content = File.ReadAllBytes(Path.Combine(currentFolderPath, "../../../../SampleImages/Item1/TPN_GiftVoucher-ForPhuketNewsTV_Oct-27-2017_Lowres_1_1900x1267.jpg"))
+            };
+            context.Media.Add(tvAd);
+
             //context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara1 });
             context.ItemMedia.Add(new ItemMedia { Item = items[0], Media = poolVillaTisara2 });
             context.ItemMedia.Add(new ItemMedia { Item = items[1], Media = leMeridien });
             context.ItemMedia.Add(new ItemMedia { Item = items[2], Media = andaraResortBBQ });
             context.ItemMedia.Add(new ItemMedia { Item = items[3], Media = surinResort });
             context.ItemMedia.Add(new ItemMedia { Item = items[4], Media = movenpickResort });
-
+            context.ItemMedia.Add(new ItemMedia { Item = items[5], Media = adPhuketNewsThai });
+            context.ItemMedia.Add(new ItemMedia { Item = items[6], Media = adPhuketNewsRussian });
+            context.ItemMedia.Add(new ItemMedia { Item = items[7], Media = tvAd });
+            context.ItemMedia.Add(new ItemMedia { Item = items[8], Media = eternitySpa });
+            context.ItemMedia.Add(new ItemMedia { Item = items[9], Media = siamSupper });
+            context.ItemMedia.Add(new ItemMedia { Item = items[10], Media = ceilingSpeaker });
             context.ItemMedia.Add(new ItemMedia { Item = items[11], Media = novotelKamala });
-
             context.SaveChanges();
         }
     }
