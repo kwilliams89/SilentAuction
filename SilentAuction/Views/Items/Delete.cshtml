@@ -1,4 +1,5 @@
-@model SilentAuction.Models.Item
+@using SilentAuction.ViewModels
+@model ItemViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -28,7 +29,7 @@
             @Html.DisplayNameFor(model => model.Category)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Category.Name)
+            @Html.DisplayFor(model => model.Category)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.RetailPrice)
@@ -40,7 +41,7 @@
             @Html.DisplayNameFor(model => model.Sponsor)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sponsor.Name)
+            @Html.DisplayFor(model => model.Sponsor)
         </dd>
     </dl>
     

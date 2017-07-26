@@ -33,13 +33,16 @@ namespace SilentAuction.Controllers
         }
 
         // GET: Listings
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Listings.Include(l => l.Auction).Include(l => l.Item);
-            var listingsList = auctionContext.ToList();
+            var listings = await _context.Listings
+                .AsNoTracking()
+                .Include(l => l.Auction)
+                .Include(l => l.Item)
+                .ToListAsync();
 
             var viewModelsQuery =
-                from listing in listingsList
+                from listing in listings
                 select ToViewModel(listing);
 
             var viewModels = viewModelsQuery.ToList();

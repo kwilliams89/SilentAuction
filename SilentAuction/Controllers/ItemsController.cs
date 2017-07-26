@@ -36,18 +36,18 @@ namespace SilentAuction.Controllers
         // GET: Items
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Items.Include(item => item.Category).Include(l => l.Sponsor);
-            var itemsList = auctionContext.ToList();
+            var items = await _context.Items
+                .AsNoTracking()
+                .Include(item => item.Category)
+                .Include(l => l.Sponsor)
+                .ToListAsync();
 
-            var viewModelsQuery =
-                from items in itemsList
-                select ToViewModel(items);
+            var itemViewModelQuery =
+                from item in items
+                select ToViewModel(item);
 
-            var viewModels = viewModelsQuery.ToList();
+            var viewModels = itemViewModelQuery.ToList();
             return View(viewModels);
-
-           // var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.Category);
-            //return View(await auctionContext.ToListAsync());
         }
 
         // GET: Items/Details/5
@@ -67,7 +67,8 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            return View(item);
+            var viewModel = ToViewModel(item);
+            return View(viewModel);
         }
 
         // GET: Items/Create
@@ -168,7 +169,8 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            return View(item);
+            var viewModel = ToViewModel(item);
+            return View(viewModel);
         }
 
         // POST: Items/Delete/5
