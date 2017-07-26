@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SilentAuction.ViewModels
+﻿namespace SilentAuction.ViewModels
 {
     public class ItemViewModel
     {
@@ -15,7 +10,7 @@ namespace SilentAuction.ViewModels
 
         public string Description { get; set; }
 
-        public string Catagory { get; set; }
+        public string Category { get; set; }
 
         public string RetailPrice { get; set; }
     }
