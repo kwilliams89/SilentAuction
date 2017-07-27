@@ -1,4 +1,5 @@
-@model SilentAuction.Models.Listing
+@using SilentAuction.ViewModels
+@model ListingViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -12,26 +13,26 @@
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="AuctionId" class="col-md-2 control-label"></label>
+            <label asp-for="Auction" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="AuctionId" class ="form-control" asp-items="ViewBag.AuctionId"></select>
+                <select asp-for="Auction" class ="form-control" asp-items="Model.Auctions">Auction:</select>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ItemId" class="col-md-2 control-label"></label>
+            <label asp-for="Item" class="col-md-2 control-label">Item:</label>
             <div class="col-md-10">
-                <select asp-for="ItemId" class ="form-control" asp-items="ViewBag.ItemId"></select>
+                <select asp-for="Item" class ="form-control" asp-items="Model.Items"></select>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="StartingBid" class="col-md-2 control-label"></label>
+            <label asp-for="MinimumBid" class="col-md-2 control-label">Minimum Bid:</label>
             <div class="col-md-10">
-                <input asp-for="StartingBid" class="form-control" />
-                <span asp-validation-for="StartingBid" class="text-danger"></span>
+                <input asp-for="MinimumBid" class="form-control" />
+                <span asp-validation-for="MinimumBid" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Increment" class="col-md-2 control-label"></label>
+            <label asp-for="Increment" class="col-md-2 control-label">Bidding Increment:</label>
             <div class="col-md-10">
                 <input asp-for="Increment" class="form-control" />
                 <span asp-validation-for="Increment" class="text-danger"></span>

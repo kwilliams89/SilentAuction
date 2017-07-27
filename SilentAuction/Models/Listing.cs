@@ -21,12 +21,15 @@ namespace SilentAuction.Models
         public Item Item { get; set; }
 
         [Required]
-        [Display(Name = "Starting Bid")]
+        [Display(Name = "Minimum Bid")]
         [DataType(DataType.Currency)]
-        public decimal StartingBid { get; set; }
+        [Column(TypeName = "Money")]
+        //https://stackoverflow.com/questions/1165761/decimal-vs-double-which-one-should-i-use-and-when
+        public decimal MinimumBid { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public decimal Increment { get; set; }
     }
 }

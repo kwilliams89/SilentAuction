@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using SilentAuction.ViewModels;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
 {
@@ -16,14 +17,36 @@ namespace SilentAuction.Controllers
 
         public ListingsController(AuctionContext context)
         {
-            _context = context;    
+            _context = context;
+        }
+
+        private static ListingViewModel ToViewModel(Listing listing)
+        {
+            return new ListingViewModel
+            {
+                Id = listing.Id,
+                Item = listing.Item.Name,
+                Auction = listing.Auction.Name,
+                Increment = listing.Increment.ToString("C", new CultureInfo("th-TH")),
+                MinimumBid = listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))
+            };
         }
 
         // GET: Listings
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.Listings.Include(l => l.Auction).Include(l => l.Item);
-            return View(await auctionContext.ToListAsync());
+            var listings = await _context.Listings
+                .AsNoTracking()
+                .Include(l => l.Auction)
+                .Include(l => l.Item)
+                .ToListAsync();
+
+            var viewModelsQuery =
+                from listing in listings
+                select ToViewModel(listing);
+
+            var viewModels = viewModelsQuery.ToList();
+            return View(viewModels);
         }
 
         // GET: Listings/Details/5
@@ -43,15 +66,17 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            return View(listing);
+            var viewModel = ToViewModel(listing);
+            return View(viewModel);
         }
 
         // GET: Listings/Create
         public IActionResult Create()
         {
-            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id");
-            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name");
-            return View();
+            var viewModel = new ListingViewModel();
+            viewModel.Auctions = new SelectList(_context.Auctions, "Id", "Name", viewModel.Auction);
+            viewModel.Items = new SelectList(_context.Items, "Id", "Name", viewModel.Item);
+            return View(viewModel);
         }
 
         // POST: Listings/Create
@@ -59,17 +84,82 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AuctionId,ItemId,StartingBid,Increment")] Listing listing)
+        public async Task<IActionResult> Create(ListingViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(viewModel.Auction))
             {
-                _context.Add(listing);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                ModelState.AddModelError("Auction", "The Auction field is empty.");
             }
-            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id", listing.AuctionId);
-            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
-            return View(listing);
+            else
+            {
+                if (string.IsNullOrWhiteSpace(viewModel.Item))
+                {
+                    ModelState.AddModelError("Item", "The Item field is empty.");
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(viewModel.MinimumBid))
+                    {
+                        ModelState.AddModelError("MinimumBid", "The Starting bid is empty");
+                    }
+                    else
+                    {
+                        if (string.IsNullOrWhiteSpace(viewModel.Increment))
+                        {
+                            ModelState.AddModelError("Increment", "The Increment field is empty.");
+                        }
+                        else
+                        {
+                            if (!int.TryParse(viewModel.Auction, out var auctionId))
+                            {
+                                ModelState.AddModelError("Auction", "Couldn't parse AuctionId");
+                            }
+                            else
+                            {
+                                if (!int.TryParse(viewModel.Item, out var itemId))
+                                {
+                                    ModelState.AddModelError("Item", "Couldn't parse ItemId");
+                                }
+                                else
+                                {
+                                    if (!decimal.TryParse(viewModel.MinimumBid, out var MinimumBid))
+                                    {
+                                        ModelState.AddModelError("MinimumBid", "Couldn't parse Starting Bid");
+                                    }
+                                    else
+                                    {
+                                        if (!decimal.TryParse(viewModel.Increment, out var increment))
+                                        {
+                                            ModelState.AddModelError("Increment", "Couldn't parse Increment");
+                                        }
+                                        else
+                                        {
+                                            var listing = new Listing
+                                            {
+                                                AuctionId = auctionId,
+                                                ItemId = itemId,
+                                                MinimumBid = MinimumBid,
+                                                Increment = increment
+                                            };
+
+                                            _context.Add(listing);
+                                            await _context.SaveChangesAsync();
+
+                                            TempData["SuccessMessage"] = $"Successfully created listing #{listing.Id.ToString()}.";
+
+                                            return RedirectToAction("Index");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            viewModel.Auctions = new SelectList(_context.Auctions, "Id", "Name", viewModel.Auction);
+            viewModel.Items = new SelectList(_context.Items, "Id", "Name", viewModel.Item);
+            return View(viewModel);
         }
 
         // GET: Listings/Edit/5
@@ -85,9 +175,21 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id", listing.AuctionId);
-            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
-            return View(listing);
+
+            var itemName = _context.Items.SingleOrDefault(item => item.Id == listing.AuctionId).Name;
+            var auctionName = _context.Auctions.SingleOrDefault(auction => auction.Id == listing.AuctionId).Name;
+            var viewModel = new ListingViewModel
+            {
+                Id = listing.Id,
+                Item = itemName,
+                Auction = auctionName,
+                Increment = listing.Increment.ToString("C", new CultureInfo("th-TH")),
+                MinimumBid = listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))
+            };
+
+            viewModel.Auctions = new SelectList(_context.Auctions, "Id", "Name", viewModel.Auction);
+            viewModel.Items = new SelectList(_context.Items, "Id", "Name", viewModel.Item);
+            return View(viewModel);
         }
 
         // POST: Listings/Edit/5
@@ -95,36 +197,108 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AuctionId,ItemId,StartingBid,Increment")] Listing listing)
+        public async Task<IActionResult> Edit(int id, ListingViewModel viewModel)
         {
-            if (id != listing.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(viewModel.Auction))
             {
-                try
+                ModelState.AddModelError("Auction", "The Auction field is empty.");
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(viewModel.Item))
                 {
-                    _context.Update(listing);
-                    await _context.SaveChangesAsync();
+                    ModelState.AddModelError("Item", "The Item field is empty.");
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ListingExists(listing.Id))
+                    if (string.IsNullOrWhiteSpace(viewModel.MinimumBid))
                     {
-                        return NotFound();
+                        ModelState.AddModelError("MinimumBid", "The Starting bid is empty");
                     }
                     else
                     {
-                        throw;
+                        if (string.IsNullOrWhiteSpace(viewModel.Increment))
+                        {
+                            ModelState.AddModelError("Increment", "The Increment field is empty.");
+                        }
+                        else
+                        {
+                            if (!int.TryParse(viewModel.Auction, out var auctionId))
+                            {
+                                ModelState.AddModelError("Auction", "Couldn't parse AuctionId");
+                            }
+                            else
+                            {
+                                if (!int.TryParse(viewModel.Item, out var itemId))
+                                {
+                                    ModelState.AddModelError("Item", "Couldn't parse ItemId");
+                                }
+                                else
+                                {
+                                    string MinimumBidInput = viewModel.MinimumBid;
+                                    if (Regex.IsMatch(MinimumBidInput, @"^฿"))
+                                    {
+                                        MinimumBidInput = MinimumBidInput.Substring(1);
+                                    }
+                                    if (!decimal.TryParse(MinimumBidInput, out var MinimumBid))
+                                    {
+                                        ModelState.AddModelError("MinimumBid", "Couldn't parse Starting Bid");
+                                    }
+                                    else
+                                    {
+                                        string incrementInput = viewModel.Increment;
+                                        if (Regex.IsMatch(incrementInput, @"^฿"))
+                                        {
+                                            incrementInput = incrementInput.Substring(1);
+                                        }
+                                        if (!decimal.TryParse(incrementInput, out var increment))
+                                        {
+                                            ModelState.AddModelError("Increment", "Couldn't parse Increment");
+                                        }
+                                        else
+                                        {
+                                            var listing = _context.Listings.SingleOrDefaultAsync(listing0 => listing0.Id == id).Result;
+
+                                            listing.ItemId = itemId;
+                                            listing.AuctionId = auctionId;
+                                            listing.MinimumBid = MinimumBid;
+                                            listing.Increment = increment;
+
+                                            try
+                                            {
+                                                _context.Update(listing);
+                                                await _context.SaveChangesAsync();
+                                            }
+                                            catch (DbUpdateConcurrencyException)
+                                            {
+                                                if (!ListingExists(listing.Id))
+                                                {
+                                                    return NotFound();
+                                                }
+                                                else
+                                                {
+                                                    throw;
+                                                }
+                                            }
+                                            TempData["SuccessMessage"] = $"Successfully created listing #{listing.Id.ToString()}.";
+                                            return RedirectToAction("Index");
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                return RedirectToAction("Index");
             }
-            ViewData["AuctionId"] = new SelectList(_context.Auctions, "Id", "Id", listing.AuctionId);
-            ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Name", listing.ItemId);
-            return View(listing);
+
+            viewModel.Auctions = new SelectList(_context.Auctions, "Id", "Name", viewModel.Auction);
+            viewModel.Items = new SelectList(_context.Items, "Id", "Name", viewModel.Item);
+            return View(viewModel);
         }
 
         // GET: Listings/Delete/5
@@ -144,7 +318,8 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            return View(listing);
+            var viewModel = ToViewModel(listing);
+            return View(viewModel);
         }
 
         // POST: Listings/Delete/5

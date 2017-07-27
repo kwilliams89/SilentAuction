@@ -1,150 +1,87 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
-using SilentAuction.Models;
-using System.Linq;
-using System.Threading.Tasks;
+using SkiaSharp;
+using System;
+using System.IO;
 
 namespace SilentAuction.Controllers
 {
     public class MediaController : Controller
     {
-        private readonly AuctionContext _context;
+        private AuctionContext AuctionContext { get; }
 
-        public MediaController(AuctionContext context)
+        public MediaController(AuctionContext auctionContext)
         {
-            _context = context;    
+            AuctionContext = auctionContext ?? throw new ArgumentNullException(nameof(auctionContext));
         }
 
         // GET: Media
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int id)
         {
-            return View(await _context.Media.ToListAsync());
-        }
+            var media = AuctionContext.Media.Find(id);
 
-        // GET: Media/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var media = await _context.Media
-                .SingleOrDefaultAsync(m => m.Id == id);
             if (media == null)
             {
                 return NotFound();
             }
 
-            return View(media);
+            return File(media.Content, media.Type, media.FileName);
         }
 
-        // GET: Media/Create
-        public IActionResult Create()
+        public IActionResult Thumbnail(int id)
         {
-            return View();
-        }
+            var media = AuctionContext.Media.Find(id);
 
-        // POST: Media/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FileName,Type,Content")] Media media)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(media);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(media);
-        }
-
-        // GET: Media/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var media = await _context.Media.SingleOrDefaultAsync(m => m.Id == id);
             if (media == null)
             {
                 return NotFound();
             }
-            return View(media);
-        }
 
-        // POST: Media/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FileName,Type,Content")] Media media)
-        {
-            if (id != media.Id)
+            var outputStream = new MemoryStream();
+
+            using (var inputStream = new MemoryStream(media.Content))
             {
-                return NotFound();
+                ResizeImage(inputStream, outputStream, 150);
             }
 
-            if (ModelState.IsValid)
+            outputStream.Position = 0;
+
+            return File(outputStream, media.Type, media.FileName);
+        }
+
+        public void ResizeImage(Stream input, Stream output, int size, int quality = 75)
+        {
+            using (var inputStream = new SKManagedStream(input))
+            using (var original = SKBitmap.Decode(inputStream))
             {
-                try
+                int width, height;
+
+                if (original.Width > original.Height)
                 {
-                    _context.Update(media);
-                    await _context.SaveChangesAsync();
+                    width = size;
+                    height = original.Height * size / original.Width;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!MediaExists(media.Id))
+                    width = original.Width * size / original.Height;
+                    height = size;
+                }
+
+                using (var resized = original.Resize(new SKImageInfo(width, height), SKBitmapResizeMethod.Lanczos3))
+                {
+                    if (resized == null)
                     {
-                        return NotFound();
+                        return;
                     }
-                    else
+
+                    using (var image = SKImage.FromBitmap(resized))
                     {
-                        throw;
+                        image.Encode(SKEncodedImageFormat.Jpeg, quality)
+                            .SaveTo(output);
                     }
                 }
-                return RedirectToAction("Index");
             }
-            return View(media);
-        }
-
-        // GET: Media/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var media = await _context.Media
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (media == null)
-            {
-                return NotFound();
-            }
-
-            return View(media);
-        }
-
-        // POST: Media/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var media = await _context.Media.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Media.Remove(media);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        private bool MediaExists(int id)
-        {
-            return _context.Media.Any(e => e.Id == id);
+            return;
         }
     }
 }

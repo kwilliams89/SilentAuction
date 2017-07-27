@@ -5,6 +5,22 @@ namespace SilentAuction.ViewModels
 {
     public class AuctionViewModel
     {
-        public IList<Listing> Listings { get; set; } = new List<Listing>();
+        public int Id { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public IList<Category> Categories { get; set; }
+
+        public PaginatedList<Listing> Listings { get; set; }
+
+        public string SearchQuery { get; set; }
+
+        public string AuctionName { get; set; }
+
+        public string AuctionEndDate { get; set; }
+
+        public int? PageSize { get; set; }
     }
 }
+
+

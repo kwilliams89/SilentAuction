@@ -14,10 +14,10 @@ namespace SilentAuction.Models
         [Display(Name = "Sponsor")]
         public int SponsorId { get; set; }
 
-        public Sponsor Sponsor { get; set; }
+        public virtual Sponsor Sponsor { get; set; }
 
         [Required]
-        [StringLength(35, ErrorMessage = "Must be 35 characters or less")]
+        [StringLength(256, ErrorMessage = "Must be 256 characters or less")]
         public string Name { get; set; }
 
         /// <summary>
@@ -28,23 +28,21 @@ namespace SilentAuction.Models
         /// </summary>
         public string Description { get; set; }
 
-        public int CatagoryId { get; set; }
+        [Required]
+        [ForeignKey(nameof(Models.Category))]
+        [Display(Name = "Category")]
+        public int CategoryId { get; set; }
 
-        public virtual Catagory Catagory { get; set; }
+        public virtual Category Category { get; set; }
 
         [Required]
         [Display(Name = "Retail Price")]
         [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public decimal RetailPrice { get; set; }
 
-        [Required]
-        //https://stackoverflow.com/questions/1165761/decimal-vs-double-which-one-should-i-use-and-when
-        [Display(Name = "Starting Bid")]
-        [DataType(DataType.Currency)]
-        public decimal StartingBid { get; set; }
-
         // Has Many
-        public ICollection<Media> Media { get; set; }
+        public virtual ICollection<ItemMedia> ItemMedia { get; set; }
 
         public ICollection<Listing> Listings { get; set; }
 

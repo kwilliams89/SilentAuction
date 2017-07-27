@@ -1,4 +1,5 @@
-@model IEnumerable<SilentAuction.Models.Listing>
+@using SilentAuction.ViewModels
+@model IEnumerable<ListingViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +14,7 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.StartingBid)
+                    @Html.DisplayNameFor(model => model.MinimumBid)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Increment)
@@ -31,16 +32,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.StartingBid)
+                @Html.DisplayFor(modelItem => item.MinimumBid)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Increment)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Auction.Id)
+                @Html.DisplayFor(modelItem => item.Auction)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Item.Name)
+                @Html.DisplayFor(modelItem => item.Item)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -1,4 +1,5 @@
-@model SilentAuction.Models.Listing
+@using SilentAuction.ViewModels
+@model ListingViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,10 +14,10 @@
     <dl class="dl-horizontal">
         <input type="hidden" asp-for="Id" />
         <dt>
-            @Html.DisplayNameFor(model => model.StartingBid)
+            @Html.DisplayNameFor(model => model.MinimumBid)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.StartingBid)
+            @Html.DisplayFor(model => model.MinimumBid)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Increment)
@@ -28,13 +29,13 @@
             @Html.DisplayNameFor(model => model.Auction)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Auction.Id)
+            @Html.DisplayFor(model => model.Auction)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Item)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Item.Name)
+            @Html.DisplayFor(model => model.Item)
         </dd>
     </dl>
     

@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,24 +27,74 @@ namespace SilentAuction.Controllers
             return View(await AuctionContext.Auctions.ToListAsync());
         }
 
-        public IActionResult SilentAuction(int? id)
+        public async Task<IActionResult> SilentAuction(int? id, int? categoryId, string searchQuery, int? pageIndex, int? pageSize)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new AuctionViewModel();
-            //var listings = AuctionContext.Listings.Where(listing => listing.AuctionId == id);
+            var categories = (from Name in AuctionContext.Categories select Name).ToList();
+            var auction = AuctionContext.Auctions.SingleOrDefaultAsync(auction0 => auction0.Id == id).Result;
+            var endDate = auction.EndDate;
+            var name = auction.Name;
 
             var listingsQuery =
                 from listing in AuctionContext.Listings
                     .AsNoTracking()
                     .Include(listing0 => listing0.Item)
+                        .ThenInclude(itemMedia0 => itemMedia0.ItemMedia)
+                    .Include(listing0 => listing0.Item)
+                        .ThenInclude(itemSponsor => itemSponsor.Sponsor)
+                    .Include(listing0 => listing0.Item)
+                        .ThenInclude(itemCategory => itemCategory.Category)
                 where listing.AuctionId == id
                 select listing;
 
-            viewModel.Listings = listingsQuery.ToList();
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.Name.Contains(searchQuery)
+                    || listing0.Item.Description.Contains(searchQuery));
+            }
+
+            if (!categoryId.Equals(null) && !categoryId.Equals(-1))
+            {
+                listingsQuery = listingsQuery.Where(listing0 => listing0.Item.CategoryId.Equals(categoryId));
+            }
+            else
+            {
+                categoryId = -1;
+            }
+
+            listingsQuery = listingsQuery.OrderBy(listing => listing.Item.Name);
+
+
+
+            // Creating ItemsPerPage list
+            List<SelectListItem> ItemsPerPage = new List<SelectListItem>()
+            {
+                new SelectListItem { Selected=true, Text = "5", Value = "1" },
+                new SelectListItem { Text = "10", Value = "2" }
+            };
+
+            // Assigning ItemsPerPage list to ViewBag
+            ViewBag.Locations = ItemsPerPage;
+
+            // show items per page through PaginatedList
+            //var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize);
+            var listings = await PaginatedList<Listing>.CreateAsync(listingsQuery, pageIndex ?? 1, pageSize ?? 5);
+
+            var viewModel = new AuctionViewModel
+            {
+                Id = id.Value,
+                CategoryId = categoryId.Value,
+                Categories = categories,
+                Listings = listings,
+                SearchQuery = searchQuery,
+                AuctionEndDate = endDate.ToString("D", new CultureInfo("en-EN")),
+                AuctionName = name,
+                PageSize = pageSize
+            };
 
             return View(viewModel);
         }

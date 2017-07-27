@@ -10,7 +10,7 @@ namespace SilentAuction.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(35, ErrorMessage = "Must be 35 characters or less")]
+        [StringLength(256, ErrorMessage = "Must be 256 characters or less")]
         public string Name { get; set; }
 
         [Required]

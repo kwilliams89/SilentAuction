@@ -1,4 +1,4 @@
-@model IEnumerable<SilentAuction.Models.Item>
+@model IEnumerable<SilentAuction.ViewModels.ItemViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,13 +19,11 @@
                     @Html.DisplayNameFor(model => model.Description)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Catagory)
+                    @Html.DisplayNameFor(model => model.Category)
                 </th>
+
                 <th>
                     @Html.DisplayNameFor(model => model.RetailPrice)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.StartingBid)
                 </th>
             <th>
                 @Html.DisplayNameFor(model => model.Sponsor)
@@ -43,16 +41,13 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Catagory.Name)
+                @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RetailPrice)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartingBid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sponsor.Name)
+                @Html.DisplayFor(modelItem => item.Sponsor)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

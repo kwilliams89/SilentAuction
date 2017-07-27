@@ -29,6 +29,7 @@ namespace SilentAuction.Models
 
         [Required]
         [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public decimal Amount { get; set; }
     }
 }
