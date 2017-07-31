@@ -1,11 +1,17 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
@@ -13,10 +19,13 @@ namespace SilentAuction.Controllers
     public class ItemsController : Controller
     {
         private readonly AuctionContext _context;
+        private readonly IHostingEnvironment _environment;
 
-        public ItemsController(AuctionContext context)
+        public ItemsController(AuctionContext context,
+            IHostingEnvironment environment)
         {
-            _context = context;    
+            _context = context;
+            _environment = environment;
         }
 
         private static ItemViewModel ToViewModel(Item item)
@@ -28,7 +37,7 @@ namespace SilentAuction.Controllers
                 Sponsor = item.Sponsor.Name,
                 Description = item.Description,
                 Category = item.Category.Name,
-                RetailPrice = item.RetailPrice.ToString("C", new CultureInfo("th-TH"))
+                RetailPrice = item.RetailPrice.ToThaiCurrencyDisplayString()
 
             };
         }
@@ -113,6 +122,71 @@ namespace SilentAuction.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
             return View(item);
+        }
+
+        public async Task<IActionResult> Upload(int itemId, ICollection<IFormFile> files)
+        {
+            foreach (var file in files)
+            {
+                var size = (int)file.Length;
+
+                if (size <= 0)
+                {
+                    continue;
+                }
+
+                var content = ReadAllBytes(file);
+
+                var media = new Media
+                {
+                    FileName = file.FileName,
+                    Type = file.ContentType,
+                    Content = content
+                };
+
+                _context.Media.Add(media);
+
+                var itemMedia = new ItemMedia
+                {
+                    ItemId = itemId,
+                    Media = media
+                };
+
+                _context.ItemMedia.Add(itemMedia);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Added {files.Count} images to the item.";
+
+            return RedirectToAction(nameof(Edit), routeValues: new { id = itemId });
+        }
+
+        private static byte[] ReadAllBytes(IFormFile file)
+        {
+            var size = (int)file.Length;
+            var buffer = new byte[size];
+
+            using (var inputStream = file.OpenReadStream())
+            {
+                var bytesRemaining = size;
+                var offset = 0;
+
+                while (offset < size)
+                {
+                    var bytesRead = inputStream.Read(buffer, offset, bytesRemaining);
+
+                    if (bytesRead == 0)
+                    {
+                        break;
+                    }
+
+                    offset += bytesRead;
+                    bytesRemaining -= bytesRead;
+                }
+            }
+
+            return buffer;
         }
 
         // POST: Items/Edit/5
