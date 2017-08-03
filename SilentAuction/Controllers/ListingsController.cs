@@ -27,8 +27,8 @@ namespace SilentAuction.Controllers
                 Id = listing.Id,
                 Item = listing.Item.Name,
                 Auction = listing.Auction.Name,
-                Increment = listing.Increment.ToString("C", new CultureInfo("th-TH")),
-                MinimumBid = listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))
+                Increment = listing.Increment.ToThaiCurrencyDisplayString(),
+                MinimumBid = listing.MinimumBid.ToThaiCurrencyDisplayString()
             };
         }
 
@@ -183,8 +183,8 @@ namespace SilentAuction.Controllers
                 Id = listing.Id,
                 Item = itemName,
                 Auction = auctionName,
-                Increment = listing.Increment.ToString("C", new CultureInfo("th-TH")),
-                MinimumBid = listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))
+                Increment = listing.Increment.ToThaiCurrencyDisplayString(),
+                MinimumBid = listing.MinimumBid.ToThaiCurrencyDisplayString()
             };
 
             viewModel.Auctions = new SelectList(_context.Auctions, "Id", "Name", viewModel.Auction);

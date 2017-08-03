@@ -88,13 +88,16 @@
                         </div>
 
                         <div class="col-md-2">
-                            <p>Retail Price: @listing.Item.RetailPrice.ToString("C", new CultureInfo("th-TH"))</p>
+                            <p>Retail Price: @listing.Item.RetailPrice.ToThaiCurrencyDisplayString()</p>
                         </div>
 
                         <div class="col-md-2">
-                            <p>Current Bid: @listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))</p>
+                            <p>Current Bid: @listing.MinimumBid.ToThaiCurrencyDisplayString()</p>
                         </div>
-                    </div>
+                            <div class="col-md-2" style="padding-top: 50px">
+                                <input type="button" value="Bid" class="btn btn-default btn-block" />
+                            </div>  
+                    </div>      
                 </div>
             </div>
         </div>
