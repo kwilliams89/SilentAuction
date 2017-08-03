@@ -1,0 +1,20 @@
+@using SilentAuction.ViewModels;
+@using SilentAuction.Controllers;
+
+@model BidHistoryViewModel
+@{
+    var listing = Model.Listing;
+    ViewData["Title"] = "Bid Detail";
+}
+
+<h2>BidDetail</h2>
+
+<div>
+    <h4>Listing Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(listing.Item.Name)
+        </dt>
+    </dl>
+</div>
