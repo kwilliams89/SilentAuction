@@ -158,33 +158,40 @@ namespace SilentAuction.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> BidDetails(int? ListingId)
+        public async Task<IActionResult> BidDetails(Listing myListing, string firstName, string lastName, string email, string phone, decimal amount)
         {
-            if (ListingId == null)
-            {
-                return NotFound();
-            }
+        
+                var myuser = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    Phone = phone,
+                };
+                AuctionContext.Add(myuser);
 
-            var myListing =
-                from listing in AuctionContext.Listings
-                    .AsNoTracking()
-                    .Include(listing0 => listing0.Item)
-                        .ThenInclude(itemMedia0 => itemMedia0.ItemMedia)
-                    .Include(listing0 => listing0.Item)
-                        .ThenInclude(itemSponsor => itemSponsor.Sponsor)
-                    .Include(listing0 => listing0.Item)
-                        .ThenInclude(itemCategory => itemCategory.Category)
-                where listing.Id == ListingId
-                select listing;
+                var mybid = new BidHistory
+                {
+                    Listing = myListing,
+                    ListingId = myListing.Id,
+                    UserId = myuser.UserId,
+                    User = myuser,
+                    Amount = amount
+                };
+                AuctionContext.Add(mybid);
+                await AuctionContext.SaveChangesAsync();
 
-
-            var viewModel = new BidHistoryViewModel
-            {
-
-                MyListing = (Listing) myListing
-            };
-
-            return View(viewModel);
+                var myView = new BidHistoryViewModel
+                {
+                    ListingId = myListing.Id,
+                    MyListing = myListing,
+                    MySponsor = myListing.Item.Sponsor.Name,
+                    MyBid = mybid,
+                    MyUser = myuser
+                };
+                return View(myView);
+            
+       
         }
 
         private bool BidHistoryExists(int id)

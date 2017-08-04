@@ -66,8 +66,18 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
+            var sponsor = AuctionContext.Sponsors.SingleOrDefaultAsync(sponsor0 => sponsor0.Id == listing.Item.SponsorId).Result;
 
-            return View(listing);
+            var myView = new BidHistoryViewModel {
+
+                ListingId = listing.Id,
+                MyListing = listing,
+                CurrentBid = listing.MinimumBid,
+                MinimumBid = listing.MinimumBid + listing.Increment,
+                MySponsor = sponsor.Name
+            };
+
+            return View(myView);
         }
 
         // GET: Listings/Create

@@ -8,5 +8,16 @@ namespace SilentAuction.ViewModels
         public int ListingId { get; set; }
 
         public Listing MyListing { get; set; }
+
+        public decimal CurrentBid { get; set; }
+
+        public decimal MinimumBid { get; set; }
+
+
+        public string MySponsor { get; set; }
+
+        public User MyUser{ get; set; }
+
+        public BidHistory MyBid { get; set; }
     }
 }
