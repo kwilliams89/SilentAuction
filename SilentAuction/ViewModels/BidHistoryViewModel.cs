@@ -13,11 +13,9 @@ namespace SilentAuction.ViewModels
 
         public decimal MinimumBid { get; set; }
 
-
         public string MySponsor { get; set; }
 
-        public User MyUser{ get; set; }
+        public BidDetailsViewModel MyBidDetails {get; set;}
 
-        public BidHistory MyBid { get; set; }
     }
 }

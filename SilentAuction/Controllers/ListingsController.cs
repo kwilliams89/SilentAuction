@@ -5,6 +5,7 @@ using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -67,6 +68,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
             var sponsor = AuctionContext.Sponsors.SingleOrDefaultAsync(sponsor0 => sponsor0.Id == listing.Item.SponsorId).Result;
+      
 
             var myView = new BidHistoryViewModel {
 
@@ -74,7 +76,7 @@ namespace SilentAuction.Controllers
                 MyListing = listing,
                 CurrentBid = listing.MinimumBid,
                 MinimumBid = listing.MinimumBid + listing.Increment,
-                MySponsor = sponsor.Name
+                MySponsor = sponsor.Name,
             };
 
             return View(myView);

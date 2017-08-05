@@ -23,7 +23,10 @@ namespace SilentAuction.Controllers
         // GET: BidHistories
         public async Task<IActionResult> Index()
         {
-            return View(await AuctionContext.BidHistories.ToListAsync());
+            var bidhistories = await AuctionContext.BidHistories.AsNoTracking()
+                .Include(l => l.Listing)
+                .Include(l => l.User).ToListAsync();
+            return View(bidhistories);
         }
 
         // GET: BidHistories/Details/5
@@ -158,38 +161,43 @@ namespace SilentAuction.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> BidDetails(Listing myListing, string firstName, string lastName, string email, string phone, decimal amount)
+        public async Task<IActionResult> BidDetails(int id, [Bind("FirstName,LastName,Email,Phone,Amount")] BidDetailsViewModel myBidDetails)
         {
-        
-                var myuser = new User
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = email,
-                    Phone = phone,
-                };
-                AuctionContext.Add(myuser);
 
-                var mybid = new BidHistory
-                {
-                    Listing = myListing,
-                    ListingId = myListing.Id,
-                    UserId = myuser.UserId,
-                    User = myuser,
-                    Amount = amount
+            var listing = await AuctionContext.Listings
+                .Include(l => l.Auction)
+                .Include(l => l.Item)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            var myuser = new User
+            {
+                FirstName = myBidDetails.FirstName,
+                LastName = myBidDetails.LastName,
+                Email = myBidDetails.Email,
+                Phone = myBidDetails.Phone,
+                RoleId = RoleId.User
+            };
+
+            AuctionContext.Add(myuser);
+            await AuctionContext.SaveChangesAsync();
+
+            var user = await AuctionContext.Users.FirstOrDefaultAsync(m => m.Email == myuser.Email);
+
+
+            var mybid = new BidHistory
+            {
+                Listing = listing,
+                ListingId = id,
+                UserId = myuser.UserId,
+                User = user,
+                Amount = myBidDetails.Amount,
                 };
+
+           
                 AuctionContext.Add(mybid);
                 await AuctionContext.SaveChangesAsync();
 
-                var myView = new BidHistoryViewModel
-                {
-                    ListingId = myListing.Id,
-                    MyListing = myListing,
-                    MySponsor = myListing.Item.Sponsor.Name,
-                    MyBid = mybid,
-                    MyUser = myuser
-                };
-                return View(myView);
+                return View(mybid);
             
        
         }
