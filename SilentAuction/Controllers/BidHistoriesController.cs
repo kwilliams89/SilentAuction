@@ -203,14 +203,15 @@ namespace SilentAuction.Controllers
                 var user = await AuctionContext.Users.FirstOrDefaultAsync(m => m.Email == myuser.Email);
                 myuser = user;
             }
-            
+
             var mybid = new BidHistory
-                {
-                    Listing = listing,
-                    ListingId = id,
-                    UserId = myuser.UserId,
-                    User = myuser,
-                    Amount = myBidDetails.Amount,
+            {
+                Listing = listing,
+                ListingId = id,
+                UserId = myuser.UserId,
+                User = myuser,
+                Amount = myBidDetails.Amount,
+                Date = DateTime.Today
                 };
            
 
