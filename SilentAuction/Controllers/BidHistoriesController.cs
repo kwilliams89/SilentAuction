@@ -30,17 +30,18 @@ namespace SilentAuction.Controllers
         }
 
         // GET: BidHistories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var bidHistory = await AuctionContext.BidHistories
                 .Include(b => b.Listing)
                 .Include(b => b.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
+
+            var bidListing = await AuctionContext.Listings.Include(b => b.Item).SingleOrDefaultAsync(m => m.Id == bidHistory.ListingId);
+
+            bidHistory.Listing = bidListing;
+
             if (bidHistory == null)
             {
                 return NotFound();
@@ -159,66 +160,6 @@ namespace SilentAuction.Controllers
             AuctionContext.BidHistories.Remove(bidHistory);
             await AuctionContext.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
-
-        public async Task<IActionResult> BidDetails(int id, [Bind("FirstName,LastName,Email,Phone,Amount")] BidDetailsViewModel myBidDetails)
-        {
-
-            var listing = await AuctionContext.Listings
-                .Include(l => l.Auction)
-                .Include(l => l.Item)
-                .SingleOrDefaultAsync(m => m.Id == id);
-
-            User myuser = new User();
-
-            var myUsers = await AuctionContext.Users.ToListAsync();
-
-            foreach (var person in myUsers)
-            {
-
-                if (person.Email.Contains(myBidDetails.Email))
-                {
-                    myuser = person;
-                }
-                else
-                {
-                    myuser = null;
-                }
-
-            }
-
-            if (myuser == null)
-            {
-                myuser = new User
-                {
-                    FirstName = myBidDetails.FirstName,
-                    LastName = myBidDetails.LastName,
-                    Email = myBidDetails.Email,
-                    Phone = myBidDetails.Phone,
-                    RoleId = RoleId.User
-                };
-
-                AuctionContext.Add(myuser);
-                await AuctionContext.SaveChangesAsync();
-                var user = await AuctionContext.Users.FirstOrDefaultAsync(m => m.Email == myuser.Email);
-                myuser = user;
-            }
-
-            var mybid = new BidHistory
-            {
-                Listing = listing,
-                ListingId = id,
-                UserId = myuser.UserId,
-                User = myuser,
-                Amount = myBidDetails.Amount,
-                Date = DateTime.Today
-                };
-           
-
-                AuctionContext.Add(mybid);
-                await AuctionContext.SaveChangesAsync();
-
-                return View(mybid);                  
         }
 
         private bool BidHistoryExists(int id)

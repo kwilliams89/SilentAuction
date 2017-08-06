@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
@@ -68,9 +69,10 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
             var sponsor = AuctionContext.Sponsors.SingleOrDefaultAsync(sponsor0 => sponsor0.Id == listing.Item.SponsorId).Result;
-      
 
-            var myView = new BidHistoryViewModel {
+
+            var myView = new BidHistoryViewModel
+            {
 
                 ListingId = listing.Id,
                 MyListing = listing,
@@ -78,8 +80,111 @@ namespace SilentAuction.Controllers
                 MinimumBid = listing.MinimumBid + listing.Increment,
                 MySponsor = sponsor.Name,
             };
-
             return View(myView);
+        }
+
+        // Post: Listings/Details/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(int id, [Bind("FirstName,LastName,Email,Phone,Amount")] BidDetailsViewModel myBidDetails)
+            {
+            var listing = await AuctionContext.Listings
+                .Include(l => l.Auction)
+                .Include(l => l.Item)
+                    .ThenInclude(l => l.Sponsor)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            var minBid = listing.MinimumBid + listing.Increment;
+
+            var mybidhistory = new BidHistoryViewModel
+            {
+                ListingId = listing.Id,
+                MyListing = listing,
+                MySponsor = listing.Item.Sponsor.Name,
+                CurrentBid = listing.MinimumBid,
+                MinimumBid = minBid,
+                MyBidDetails = myBidDetails
+
+            };
+
+            if (minBid > myBidDetails.Amount)
+            {
+                    ModelState.AddModelError("Bid", "New bid must be higher than or equal to the minimum bid");
+            }
+
+            if (myBidDetails.Amount % listing.Increment != 0)
+            {
+                ModelState.AddModelError("Bid", "Bid must be in specified increment");
+            }
+
+            if (ModelState.IsValid)
+            {
+
+                User myuser = new User();
+
+                var myUsers = await AuctionContext.Users.ToListAsync();
+
+                foreach (var person in myUsers)
+                {
+
+                    if (person.Email.Contains(myBidDetails.Email))
+                    {
+                        myuser = person;
+                    }
+                    else
+                    {
+                        myuser.Email = null;
+                    }
+
+                }
+
+                if (myuser.Email == null)
+                {
+                    myuser = new User
+                    {
+                        FirstName = myBidDetails.FirstName,
+                        LastName = myBidDetails.LastName,
+                        Email = myBidDetails.Email,
+                        Phone = myBidDetails.Phone,
+                        RoleId = RoleId.User
+                    };
+
+                    AuctionContext.Add(myuser);
+                    await AuctionContext.SaveChangesAsync();
+                    var user = await AuctionContext.Users.FirstOrDefaultAsync(m => m.Email == myuser.Email);
+                    myuser = user;
+                }
+
+                var mybid = new BidHistory
+                {
+                    Listing = listing,
+                    ListingId = id,
+                    UserId = myuser.UserId,
+                    User = myuser,
+                    Amount = myBidDetails.Amount,
+                    Date = DateTime.Today
+                };
+
+                listing.MinimumBid = mybid.Amount;
+
+
+                AuctionContext.Add(mybid);
+                await AuctionContext.SaveChangesAsync();
+
+                AuctionContext.Update(listing);
+                await AuctionContext.SaveChangesAsync();
+
+                var bidHistory = await AuctionContext.BidHistories
+                .SingleOrDefaultAsync(m => m.User.UserId == mybid.User.UserId && m.Listing.Id == mybid.Listing.Id && m.Amount == mybid.Amount );
+
+                TempData["SuccessMessage"] = $"Successfully placed bid on listing #{listing.Id.ToString()}.";
+
+                return RedirectToAction(nameof(BidHistoriesController.Details), new RouteValueDictionary( new { controller = "BidHistories", action = "Details", id = bidHistory.Id }));
+
+               // return RedirectToAction(nameof(BidHistoriesController.Details), nameof(BidHistoriesController), routeValues: new { id = bidHistory.Id});
+            }
+
+            return View(mybidhistory);
         }
 
         // GET: Listings/Create

@@ -49,11 +49,11 @@
         </dl>
     </div>
 
-<form asp-controller="BidHistories" asp-action="BidDetails" asp-route-id="@listing.Id">
+<form asp-action="Details" asp-route-id="@listing.Id">
     <div class="form-horizontal">
         <h4>Bid Now</h4>
         <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="form-group">
             <label class="col-md-2 control-label">First Name:</label>
             <div class="col-md-5">
