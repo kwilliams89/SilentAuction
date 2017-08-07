@@ -236,6 +236,10 @@ namespace SilentAuction.Controllers
             {
                 ModelState.AddModelError("Description", "The Description field is empty.");
             }
+            else if (string.IsNullOrWhiteSpace(viewModel.RetailPrice))
+            {
+                ModelState.AddModelError("RetailPrice", "The retail price field is empty.");
+            }
             else
             {
                 string retailPriceInput = viewModel.RetailPrice;
@@ -280,10 +284,45 @@ namespace SilentAuction.Controllers
                 }
             }
 
+            var itemMedia = _context.ItemMedia
+               .AsNoTracking()
+               .Where(itemMedia0 => itemMedia0.ItemId == id);
+
+            viewModel.MediaIds = itemMedia.Select(itemMedia0 => itemMedia0.MediaId).ToList();
             viewModel.Sponsors = new SelectList(_context.Sponsors, "Id", "Name", viewModel.Sponsor);
             viewModel.Categories = new SelectList(_context.Categories, "Id", "Name", viewModel.Category);
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMedia(int? mediaId, int? itemId)
+        {
+            if (mediaId == null || itemId == null)
+            {
+                return NotFound();
+            }
+
+            var itemMedia = await _context.ItemMedia
+                .AsNoTracking()
+                .SingleOrDefaultAsync(itemMedia0 => itemMedia0.MediaId == mediaId);
+
+            var media = await _context.Media
+                .AsNoTracking()
+                .SingleOrDefaultAsync(media0 => media0.Id == mediaId);
+
+
+            if (itemMedia == null || media == null)
+            {
+                return NotFound();
+            }
+
+            _context.ItemMedia.Remove(itemMedia);
+            _context.Media.Remove(media);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Deleted Media #{mediaId.ToString()}.";
+            return RedirectToAction(nameof(Edit), new { id = itemId.Value });
         }
 
         // GET: Items/Delete/5
@@ -298,6 +337,7 @@ namespace SilentAuction.Controllers
                 .Include(i => i.Sponsor)
                 .Include(i => i.Category)
                 .SingleOrDefaultAsync(m => m.Id == id);
+
             if (item == null)
             {
                 return NotFound();

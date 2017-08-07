@@ -89,6 +89,11 @@
                             </div>
                         </div>
                         <div class="media-body">
+                            <form method="post" asp-controller="Items" asp-action="DeleteMedia">
+                                <input type="hidden" name="itemId" value="@Model.Id" />
+                                <input type="hidden" name="mediaId" value="@mediaId" />
+                                <input type="submit" class="btn btn-danger spacer" value="Delete" />
+                            </form>
                         </div>
                     </div>
                 </div>
