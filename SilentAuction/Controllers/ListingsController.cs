@@ -240,12 +240,14 @@ namespace SilentAuction.Controllers
                                 }
                                 else
                                 {
-                                    string MinimumBidInput = viewModel.MinimumBid;
-                                    if (Regex.IsMatch(MinimumBidInput, @"^฿"))
+                                    string minimumBidInput = viewModel.MinimumBid;
+
+                                    if (Regex.IsMatch(minimumBidInput, @"^฿"))
                                     {
-                                        MinimumBidInput = MinimumBidInput.Substring(1);
+                                        minimumBidInput = minimumBidInput.Substring(1);
                                     }
-                                    if (!decimal.TryParse(MinimumBidInput, out var MinimumBid))
+
+                                    if (!decimal.TryParse(minimumBidInput, out var minimumBid))
                                     {
                                         ModelState.AddModelError("MinimumBid", "Couldn't parse Starting Bid");
                                     }
@@ -266,7 +268,7 @@ namespace SilentAuction.Controllers
 
                                             listing.ItemId = itemId;
                                             listing.AuctionId = auctionId;
-                                            listing.MinimumBid = MinimumBid;
+                                            listing.MinimumBid = minimumBid;
                                             listing.Increment = increment;
 
                                             try
@@ -285,7 +287,7 @@ namespace SilentAuction.Controllers
                                                     throw;
                                                 }
                                             }
-                                            TempData["SuccessMessage"] = $"Successfully created listing #{listing.Id.ToString()}.";
+                                            TempData["SuccessMessage"] = $"Successfully changed listing #{listing.Id.ToString()}.";
                                             return RedirectToAction("Index");
                                         }
                                     }
