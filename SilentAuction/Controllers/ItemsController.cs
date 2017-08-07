@@ -27,7 +27,7 @@ namespace SilentAuction.Controllers
                 Name = item.Name,
                 Sponsor = item.Sponsor.Name,
                 Description = item.Description,
-                Catagory = item.Category.Name,
+                category = item.Category.Name,
                 RetailPrice = item.RetailPrice.ToString("C", new CultureInfo("th-TH"))
 
             };
@@ -46,7 +46,7 @@ namespace SilentAuction.Controllers
             var viewModels = viewModelsQuery.ToList();
             return View(viewModels);
 
-           // var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.Catagory);
+           // var auctionContext = _context.Items.Include(item => item.Sponsor).Include(item => item.category);
             //return View(await auctionContext.ToListAsync());
         }
 
@@ -74,7 +74,7 @@ namespace SilentAuction.Controllers
         public IActionResult Create()
         {
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name");
-            ViewData["CatagoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["categoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -83,7 +83,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SponsorId,CatagoryId,Name,Description,Type,RetailPrice,MinimumBid")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,SponsorId,categoryId,Name,Description,Type,RetailPrice,MinimumBid")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace SilentAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["CatagoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
+            ViewData["categoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
             return View(item);
         }
@@ -109,7 +109,7 @@ namespace SilentAuction.Controllers
             {
                 return NotFound();
             }
-            ViewData["CatagoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
+            ViewData["categoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
             return View(item);
         }
@@ -119,7 +119,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SponsorId,CatagoryId,Name,Description,Type,RetailPrice,MinimumBid")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,SponsorId,categoryId,Name,Description,Type,RetailPrice,MinimumBid")] Item item)
         {
             if (id != item.Id)
             {
@@ -147,7 +147,7 @@ namespace SilentAuction.Controllers
                 return RedirectToAction("Index");
             }
             ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
-            ViewData["CatagoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
+            ViewData["categoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
             return View(item);
         }
 

@@ -33,14 +33,14 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var catagory = await _context.Categories
+            var category = await _context.Categories
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (catagory == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(catagory);
+            return View(category);
         }
 
         // GET: Catagories/Create
@@ -54,15 +54,15 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category catagory)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(catagory);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(catagory);
+            return View(category);
         }
 
         // GET: Catagories/Edit/5
@@ -73,12 +73,12 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var catagory = await _context.Categories.SingleOrDefaultAsync(m => m.Id == id);
-            if (catagory == null)
+            var category = await _context.Categories.SingleOrDefaultAsync(m => m.Id == id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(catagory);
+            return View(category);
         }
 
         // POST: Catagories/Edit/5
@@ -86,9 +86,9 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category catagory)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
         {
-            if (id != catagory.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace SilentAuction.Controllers
             {
                 try
                 {
-                    _context.Update(catagory);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CatagoryExists(catagory.Id))
+                    if (!categoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +113,7 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(catagory);
+            return View(category);
         }
 
         // GET: Catagories/Delete/5
@@ -124,14 +124,14 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var catagory = await _context.Categories
+            var category = await _context.Categories
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (catagory == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(catagory);
+            return View(category);
         }
 
         // POST: Catagories/Delete/5
@@ -139,13 +139,13 @@ namespace SilentAuction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var catagory = await _context.Categories.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Categories.Remove(catagory);
+            var category = await _context.Categories.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool CatagoryExists(int id)
+        private bool categoryExists(int id)
         {
             return _context.Categories.Any(e => e.Id == id);
         }

@@ -15,7 +15,7 @@ namespace SilentAuction.ViewModels
 
         public string Description { get; set; }
 
-        public string Catagory { get; set; }
+        public string category { get; set; }
 
         public string RetailPrice { get; set; }
     }
