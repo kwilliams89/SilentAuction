@@ -89,7 +89,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label">Bid Amount:</label>
             <div class="col-md-5">
-                <input type ="number" value="@(Decimal.ToInt32(Model.MinimumBid))" step="@Model.Increment" asp-validation-for="MyBidDetails.Amount" class="form-control" />
+                <input type ="number" value="@(Decimal.ToInt32(Model.MinimumBid))" min="@(Decimal.ToInt32(Model.MinimumBid))"step="@Model.Increment" asp-validation-for="MyBidDetails.Amount" class="form-control" />
                 <span asp-validation-for="MyBidDetails.Amount" class="text-danger"></span>
             </div>
         </div>
