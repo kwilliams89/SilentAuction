@@ -77,6 +77,7 @@ namespace SilentAuction.Controllers
                 ListingId = listing.Id,
                 MyListing = listing,
                 CurrentBid = listing.MinimumBid,
+                Increment = listing.Increment,
                 MinimumBid = listing.MinimumBid + listing.Increment,
                 MySponsor = sponsor.Name,
             };
@@ -100,6 +101,7 @@ namespace SilentAuction.Controllers
             {
                 ListingId = listing.Id,
                 MyListing = listing,
+                Increment = listing.Increment,
                 MySponsor = listing.Item.Sponsor.Name,
                 CurrentBid = listing.MinimumBid,
                 MinimumBid = minBid,
@@ -127,7 +129,7 @@ namespace SilentAuction.Controllers
                 foreach (var person in myUsers)
                 {
 
-                    if (person.Email.Contains(myBidDetails.Email))
+                    if (person.Email.Equals(myBidDetails.Email))
                     {
                         myuser = person;
                     }
@@ -167,7 +169,6 @@ namespace SilentAuction.Controllers
 
                 listing.MinimumBid = mybid.Amount;
 
-
                 AuctionContext.Add(mybid);
                 await AuctionContext.SaveChangesAsync();
 
@@ -177,11 +178,10 @@ namespace SilentAuction.Controllers
                 var bidHistory = await AuctionContext.BidHistories
                 .SingleOrDefaultAsync(m => m.User.UserId == mybid.User.UserId && m.Listing.Id == mybid.Listing.Id && m.Amount == mybid.Amount );
 
-                TempData["SuccessMessage"] = $"Successfully placed bid on listing #{listing.Id.ToString()}.";
+                TempData["SuccessMessage"] = $"Successfully placed bid on {listing.Item.Name}.";
 
                 return RedirectToAction(nameof(BidHistoriesController.Details), new RouteValueDictionary( new { controller = "BidHistories", action = "Details", id = bidHistory.Id }));
 
-               // return RedirectToAction(nameof(BidHistoriesController.Details), nameof(BidHistoriesController), routeValues: new { id = bidHistory.Id});
             }
 
             return View(mybidhistory);

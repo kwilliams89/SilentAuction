@@ -64,28 +64,32 @@
         <div class="form-group">
             <label class="col-md-2 control-label">Last Name:</label>
             <div class="col-md-5">
-                <input asp-for="MyBidDetails.LastName" class="form-control" />
+                <input  asp-for="MyBidDetails.LastName" class="form-control" />
                 <span asp-validation-for="MyBidDetails.LastName" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label">Email:</label>
             <div class="col-md-5">
-                <input asp-for="MyBidDetails.Email" class="form-control" />
+                <input type="email" asp-for="MyBidDetails.Email" class="form-control" id="bidEmail"/>
                 <span asp-validation-for="MyBidDetails.Email" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label">Phone Number:</label>
             <div class="col-md-5">
-                <input asp-for="MyBidDetails.Phone" class="form-control" />
+                <input type='tel'  
+                       pattern='\d{3}[\-]\d{3}[\-]\d{4}' 
+                       title='555-55-5555)' 
+                       asp-for="MyBidDetails.Phone" 
+                       class="form-control" />
                 <span asp-validation-for="MyBidDetails.Phone" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label">Bid Amount:</label>
             <div class="col-md-5">
-                <input asp-for="MyBidDetails.Amount" class="form-control" />
+                <input type ="number" value="@(Decimal.ToInt32(Model.MinimumBid))" step="@Model.Increment" asp-validation-for="MyBidDetails.Amount" class="form-control" />
                 <span asp-validation-for="MyBidDetails.Amount" class="text-danger"></span>
             </div>
         </div>

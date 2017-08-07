@@ -13,6 +13,8 @@ namespace SilentAuction.ViewModels
 
         public decimal MinimumBid { get; set; }
 
+        public decimal Increment { get; set; }
+
         public string MySponsor { get; set; }
 
         public BidDetailsViewModel MyBidDetails {get; set;}
