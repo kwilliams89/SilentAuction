@@ -29,7 +29,6 @@ namespace SilentAuction.Models
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
 
-        [Required]
         [StringLength(20, ErrorMessage = "Password cannot be longer than 20 characters.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
@@ -37,7 +36,7 @@ namespace SilentAuction.Models
         [Display(Name = "Role")]
         public RoleId RoleId { get; set; }
 
-        public virtual Role Role { get; set; }
+        public virtual Role Role { get; set; } 
 
         [DataType(DataType.Currency)]
         public decimal AutoBidAmt { get; set; }

@@ -1,20 +1,48 @@
 @model SilentAuction.Models.BidHistory
-
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>Bid Details</h2>
 
 <div>
-    <h4>BidHistory</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.DisplayNameFor(model => model.User.FirstName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Date)
+            @Html.DisplayFor(model => model.User.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.LastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Phone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Phone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Listing.Item.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Listing.Item.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Listing.Item.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Listing.Item.Description)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Amount)
@@ -23,20 +51,13 @@
             @Html.DisplayFor(model => model.Amount)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Listing)
+            @Html.DisplayNameFor(model => model.Date)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Listing.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.User.Email)
+            @Html.DisplayFor(model => model.Date)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Auctions" asp-action="SilentAuction" asp-route-id="@(Model.Listing.AuctionId)">Return to Listings</a>
 </div>

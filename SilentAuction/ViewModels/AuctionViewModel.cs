@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SilentAuction.Models;
+﻿using SilentAuction.Models;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace SilentAuction.ViewModels
 {

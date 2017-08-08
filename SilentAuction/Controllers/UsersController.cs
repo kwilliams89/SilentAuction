@@ -21,7 +21,7 @@ namespace SilentAuction.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.Include(user => user.Role).ToListAsync());
+            return View(await _context.Users./*Include(user => user.Role).*/ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -33,8 +33,8 @@ namespace SilentAuction.Controllers
             }
 
             var user = await _context.Users
-                .Include(u => u.Role)
-                .SingleOrDefaultAsync(m => m.UserId == id);
+                ./*Include(user => user.Role).*/
+                SingleOrDefaultAsync(m => m.UserId == id);
             if (user == null)
             {
                 return NotFound();
@@ -71,7 +71,6 @@ namespace SilentAuction.Controllers
                     Email = user.Email,
                     Phone = user.Phone,
                     Password = user.Password,
-                    RoleId = user.RoleId,
                     AutoBidAmt = user.AutoBidAmt
                 };
 
@@ -106,8 +105,8 @@ namespace SilentAuction.Controllers
                 User = user
             };
 
-            return await CreateOrEdit(viewModel);
-        }
+            return await CreateOrEdit(viewModel); 
+        } 
 
         private async Task<IActionResult> CreateOrEdit(CreateOrEditUserViewModel viewModel)
         {
@@ -126,7 +125,7 @@ namespace SilentAuction.Controllers
             viewModel.Roles = roleViewModelsQuery.ToList();
 
             return View(viewModel);
-        }
+        } 
 
 
         // POST: Users/Edit/5

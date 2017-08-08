@@ -1,4 +1,6 @@
-@model SilentAuction.Models.Item
+@using SilentAuction.ViewModels
+@using SilentAuction.Controllers;
+@model ItemViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -25,10 +27,10 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Catagory)
+            @Html.DisplayNameFor(model => model.Category)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Catagory.Name)
+            @Html.DisplayFor(model => model.Category)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.RetailPrice)
@@ -40,10 +42,31 @@
             @Html.DisplayNameFor(model => model.Sponsor)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Sponsor.Name)
+            @Html.DisplayFor(model => model.Sponsor)
         </dd>
     </dl>
-    
+    <div>
+        @if (Model.MediaIds.Count > 0)
+        {
+            <p>Images</p>
+            @foreach (var mediaId in Model.MediaIds)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="media">
+                            <div class="media-middle">
+                                <div>
+                                    <img class="media-object" src="@Url.Action(nameof(MediaController.Thumbnail), "Media", values: new { id = mediaId})" />
+                                </div>
+                            </div>
+                            <div class="media-body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
     <form asp-action="Delete">
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
