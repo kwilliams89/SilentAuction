@@ -1,17 +1,13 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SilentAuction.Controllers
@@ -19,17 +15,21 @@ namespace SilentAuction.Controllers
     public class ItemsController : Controller
     {
         private readonly AuctionContext _context;
-        private readonly IHostingEnvironment _environment;
 
-        public ItemsController(AuctionContext context,
-            IHostingEnvironment environment)
+        public ItemsController(AuctionContext context)
         {
             _context = context;
-            _environment = environment;
         }
 
-        private static ItemViewModel ToViewModel(Item item)
+        private static ItemViewModel ToViewModel(Item item, List<ItemMedia> itemMedia = null)
         {
+            var mediaIds = new List<int>();
+
+            if (itemMedia != null)
+            {
+                mediaIds = itemMedia.Select(itemMedia0 => itemMedia0.MediaId).ToList();
+            }
+
             return new ItemViewModel
             {
                 Id = item.Id,
@@ -37,8 +37,8 @@ namespace SilentAuction.Controllers
                 Sponsor = item.Sponsor.Name,
                 Description = item.Description,
                 Category = item.Category.Name,
-                RetailPrice = item.RetailPrice.ToThaiCurrencyDisplayString()
-
+                RetailPrice = item.RetailPrice.ToThaiCurrencyDisplayString(),
+                MediaIds = mediaIds
             };
         }
 
@@ -68,6 +68,7 @@ namespace SilentAuction.Controllers
             }
 
             var item = await _context.Items
+                .AsNoTracking()
                 .Include(i => i.Sponsor)
                 .Include(i => i.Category)
                 .SingleOrDefaultAsync(m => m.Id == id);
@@ -76,7 +77,12 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var viewModel = ToViewModel(item);
+            var itemMedia = _context.ItemMedia
+                .AsNoTracking()
+                .Where(itemMedia0 => itemMedia0.ItemId == id)
+                .ToList();
+
+            var viewModel = ToViewModel(item, itemMedia);
             return View(viewModel);
         }
 
@@ -114,14 +120,27 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items.Include(i => i.Category).SingleOrDefaultAsync(m => m.Id == id);
+            var item = await _context.Items
+                .AsNoTracking()
+                .Include(i => i.Category)
+                .Include(s => s.Sponsor)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
             if (item == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
-            ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
-            return View(item);
+
+            var itemMedia = _context.ItemMedia
+               .AsNoTracking()
+               .Where(itemMedia0 => itemMedia0.ItemId == id)
+               .ToList();
+
+            var viewModel = ToViewModel(item, itemMedia);
+            viewModel.Sponsors = new SelectList(_context.Sponsors, "Id", "Name", viewModel.Sponsor);
+            viewModel.Categories = new SelectList(_context.Categories, "Id", "Name", viewModel.Category);
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Upload(int itemId, ICollection<IFormFile> files)
@@ -194,36 +213,116 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SponsorId,CategoryId,Name,Description,Type,RetailPrice,MinimumBid")] Item item)
+        public async Task<IActionResult> Edit(int id, ItemViewModel viewModel)
         {
-            if (id != item.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!int.TryParse(viewModel.Sponsor, out var sponsorId))
             {
-                try
-                {
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ItemExists(item.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+                ModelState.AddModelError("Sponsor", "Couldn't parse sponsor");
             }
-            ViewData["SponsorId"] = new SelectList(_context.Sponsors, "Id", "Name", item.SponsorId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", item.CategoryId);
-            return View(item);
+            else if (!int.TryParse(viewModel.Category, out var categoryId))
+            {
+                ModelState.AddModelError("Category", "Couldn't parse category");
+            }
+            else if (string.IsNullOrWhiteSpace(viewModel.Name))
+            {
+                ModelState.AddModelError("Name", "The Name field is empty.");
+            }
+            else if (string.IsNullOrWhiteSpace(viewModel.Description))
+            {
+                ModelState.AddModelError("Description", "The Description field is empty.");
+            }
+            else if (string.IsNullOrWhiteSpace(viewModel.RetailPrice))
+            {
+                ModelState.AddModelError("RetailPrice", "The retail price field is empty.");
+            }
+            else
+            {
+                string retailPriceInput = viewModel.RetailPrice;
+
+                if (Regex.IsMatch(retailPriceInput, @"^฿"))
+                {
+                    retailPriceInput = retailPriceInput.Substring(1);
+                }
+
+                if (!decimal.TryParse(retailPriceInput, out var retailPrice))
+                {
+                    ModelState.AddModelError("Retailprice", "Couldn't parse retail price");
+                }
+                else
+                {
+                    var item = _context.Items.SingleOrDefaultAsync(item0 => item0.Id == id).Result;
+
+                    item.SponsorId = sponsorId;
+                    item.Name = viewModel.Name;
+                    item.Description = viewModel.Description;
+                    item.CategoryId = categoryId;
+                    item.RetailPrice = retailPrice;
+
+                    try
+                    {
+                        _context.Update(item);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ItemExists(item.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    TempData["SuccessMessage"] = $"Successfully changed listing #{item.Id.ToString()}.";
+                    return RedirectToAction("Index");
+                }
+            }
+
+            var itemMedia = _context.ItemMedia
+               .AsNoTracking()
+               .Where(itemMedia0 => itemMedia0.ItemId == id);
+
+            viewModel.MediaIds = itemMedia.Select(itemMedia0 => itemMedia0.MediaId).ToList();
+            viewModel.Sponsors = new SelectList(_context.Sponsors, "Id", "Name", viewModel.Sponsor);
+            viewModel.Categories = new SelectList(_context.Categories, "Id", "Name", viewModel.Category);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMedia(int? mediaId, int? itemId)
+        {
+            if (mediaId == null || itemId == null)
+            {
+                return NotFound();
+            }
+
+            var itemMedia = await _context.ItemMedia
+                .AsNoTracking()
+                .SingleOrDefaultAsync(itemMedia0 => itemMedia0.MediaId == mediaId);
+
+            var media = await _context.Media
+                .AsNoTracking()
+                .SingleOrDefaultAsync(media0 => media0.Id == mediaId);
+
+
+            if (itemMedia == null || media == null)
+            {
+                return NotFound();
+            }
+
+            _context.ItemMedia.Remove(itemMedia);
+            _context.Media.Remove(media);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Deleted Media #{mediaId.ToString()}.";
+            return RedirectToAction(nameof(Edit), new { id = itemId.Value });
         }
 
         // GET: Items/Delete/5
@@ -238,12 +337,18 @@ namespace SilentAuction.Controllers
                 .Include(i => i.Sponsor)
                 .Include(i => i.Category)
                 .SingleOrDefaultAsync(m => m.Id == id);
+
             if (item == null)
             {
                 return NotFound();
             }
 
-            var viewModel = ToViewModel(item);
+            var itemMedia = _context.ItemMedia
+               .AsNoTracking()
+               .Where(itemMedia0 => itemMedia0.ItemId == id)
+               .ToList();
+
+            var viewModel = ToViewModel(item, itemMedia);
             return View(viewModel);
         }
 
