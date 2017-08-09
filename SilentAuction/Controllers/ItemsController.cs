@@ -38,7 +38,9 @@ namespace SilentAuction.Controllers
                 Description = item.Description,
                 Category = item.Category.Name,
                 RetailPrice = item.RetailPrice.ToThaiCurrencyDisplayString(),
-                MediaIds = mediaIds
+                MediaIds = mediaIds,
+                OfferExpires = item.OfferExpires,
+                Terms = item.Terms
             };
         }
 
@@ -99,7 +101,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SponsorId,CategoryId,Name,Description,Type,RetailPrice,MinimumBid")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,SponsorId,CategoryId,Name,Description,Type,RetailPrice,MinimumBid,OfferExpires,Terms")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -240,6 +242,14 @@ namespace SilentAuction.Controllers
             {
                 ModelState.AddModelError("RetailPrice", "The retail price field is empty.");
             }
+            else if (string.IsNullOrWhiteSpace(viewModel.RetailPrice))
+            {
+                ModelState.AddModelError("OfferExpires", "The offer expires field is empty.");
+            }
+            else if (string.IsNullOrWhiteSpace(viewModel.RetailPrice))
+            {
+                ModelState.AddModelError("Terms", "The terms and conditions field is empty.");
+            }
             else
             {
                 string retailPriceInput = viewModel.RetailPrice;
@@ -262,7 +272,8 @@ namespace SilentAuction.Controllers
                     item.Description = viewModel.Description;
                     item.CategoryId = categoryId;
                     item.RetailPrice = retailPrice;
-
+                    item.OfferExpires = offerExpires;
+                    item.Terms = terms;
                     try
                     {
                         _context.Update(item);
