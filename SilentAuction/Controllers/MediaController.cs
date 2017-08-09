@@ -49,6 +49,27 @@ namespace SilentAuction.Controllers
             return File(outputStream, media.Type, media.FileName);
         }
 
+        public IActionResult DetailSized(int id)
+        {
+            var media = AuctionContext.Media.Find(id);
+
+            if (media == null)
+            {
+                return NotFound();
+            }
+
+            var outputStream = new MemoryStream();
+
+            using (var inputStream = new MemoryStream(media.Content))
+            {
+                ResizeImage(inputStream, outputStream, 400); 
+            }
+
+            outputStream.Position = 0;
+
+            return File(outputStream, media.Type, media.FileName);
+        }
+
         public void ResizeImage(Stream input, Stream output, int size, int quality = 75)
         {
             using (var inputStream = new SKManagedStream(input))
