@@ -19,5 +19,8 @@ namespace SilentAuction.ViewModels
 
         public BidDetailsViewModel MyBidDetails {get; set;}
 
+        public string Terms { get; set; }
+
+        public string OfferExpires { get; set; }
     }
 }

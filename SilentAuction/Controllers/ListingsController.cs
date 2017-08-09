@@ -63,6 +63,7 @@ namespace SilentAuction.Controllers
             var listing = await AuctionContext.Listings
                 .Include(l => l.Auction)
                 .Include(l => l.Item)
+                .ThenInclude(itemMedia0 => itemMedia0.ItemMedia)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (listing == null)
             {
@@ -88,11 +89,13 @@ namespace SilentAuction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Details(int id, [Bind("FirstName,LastName,Email,Phone,Amount")] BidDetailsViewModel myBidDetails)
-            {
+        {
             var listing = await AuctionContext.Listings
                 .Include(l => l.Auction)
-                .Include(l => l.Item)
-                    .ThenInclude(l => l.Sponsor)
+                .Include(listing0 => listing0.Item)
+                    .ThenInclude(itemMedia0 => itemMedia0.ItemMedia)
+                .Include(listing0 => listing0.Item)
+                    .ThenInclude(itemSponsor => itemSponsor.Sponsor)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
             var minBid = listing.MinimumBid + listing.Increment;
@@ -111,7 +114,7 @@ namespace SilentAuction.Controllers
 
             if (minBid > myBidDetails.Amount)
             {
-                    ModelState.AddModelError("Bid", "New bid must be higher than or equal to the minimum bid");
+                ModelState.AddModelError("Bid", "New bid must be higher than or equal to the minimum bid");
             }
 
             if (myBidDetails.Amount % listing.Increment != 0)
@@ -177,11 +180,11 @@ namespace SilentAuction.Controllers
                 await AuctionContext.SaveChangesAsync();
 
                 var bidHistory = await AuctionContext.BidHistories
-                .SingleOrDefaultAsync(m => m.User.UserId == mybid.User.UserId && m.Listing.Id == mybid.Listing.Id && m.Amount == mybid.Amount );
+                .SingleOrDefaultAsync(m => m.User.UserId == mybid.User.UserId && m.Listing.Id == mybid.Listing.Id && m.Amount == mybid.Amount);
 
                 TempData["SuccessMessage"] = $"Successfully placed bid on {listing.Item.Name}.";
 
-                return RedirectToAction(nameof(BidHistoriesController.Details), new RouteValueDictionary( new { controller = "BidHistories", action = "Details", id = bidHistory.Id }));
+                return RedirectToAction(nameof(BidHistoriesController.Details), new RouteValueDictionary(new { controller = "BidHistories", action = "Details", id = bidHistory.Id }));
 
             }
 
