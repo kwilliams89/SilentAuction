@@ -142,6 +142,7 @@ namespace SilentAuction.Controllers
 
                 if (myuser.Email == null)
                 {
+                    myBidDetails.Phone = myBidDetails.Phone.Replace("-", "");
                     myuser = new User
                     {
                         FirstName = myBidDetails.FirstName,

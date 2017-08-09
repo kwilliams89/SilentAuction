@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
 using SilentAuction.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace SilentAuction.Controllers
 {
@@ -41,6 +42,7 @@ namespace SilentAuction.Controllers
             var bidListing = await AuctionContext.Listings.Include(b => b.Item).SingleOrDefaultAsync(m => m.Id == bidHistory.ListingId);
 
             bidHistory.Listing = bidListing;
+            bidHistory.User.Phone = Regex.Replace(bidHistory.User.Phone.ToString(), @"^(...)(...)(....)$", "$1-$2-$3");
 
             if (bidHistory == null)
             {
