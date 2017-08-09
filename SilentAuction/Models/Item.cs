@@ -48,5 +48,9 @@ namespace SilentAuction.Models
 
         public ICollection<BidHistory> BidHistories { get; set; }
 
+        public string Terms { get; set; }
+
+        public string OfferExpires { get; set; }
+
     }
 }
