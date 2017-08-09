@@ -50,6 +50,9 @@ namespace SilentAuction.Models
 
         public string Terms { get; set; }
 
+        
+        [Display(Name = "Offer Expires")]
+        [DataType(DataType.Date)]
         public string OfferExpires { get; set; }
 
     }
