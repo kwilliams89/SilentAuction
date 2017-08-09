@@ -74,7 +74,7 @@
     </div>
 </div>
 
-<div>
+<div class="container">
     @if (Model.MediaIds.Count > 0)
     {
         <p>Images</p>
@@ -83,12 +83,10 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="media">
-                        <div class="media-middle">
-                            <div>
-                                <img class="media-object" src="@Url.Action(nameof(MediaController.Thumbnail), "Media", values: new { id = mediaId})" />
-                            </div>
+                        <div class="media-left">
+                            <img class="media-object" src="@Url.Action(nameof(MediaController.Thumbnail), "Media", values: new { id = mediaId})" />
                         </div>
-                        <div class="media-body">
+                        <div class="media-right">
                             <form method="post" asp-controller="Items" asp-action="DeleteMedia">
                                 <input type="hidden" name="itemId" value="@Model.Id" />
                                 <input type="hidden" name="mediaId" value="@mediaId" />
@@ -105,7 +103,7 @@
 
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-default">Back to List</a>
 </div>
 
 @section Scripts {
