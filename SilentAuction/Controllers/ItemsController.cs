@@ -242,11 +242,11 @@ namespace SilentAuction.Controllers
             {
                 ModelState.AddModelError("RetailPrice", "The retail price field is empty.");
             }
-            else if (string.IsNullOrWhiteSpace(viewModel.RetailPrice))
+            else if (string.IsNullOrWhiteSpace(viewModel.OfferExpires))
             {
                 ModelState.AddModelError("OfferExpires", "The offer expires field is empty.");
             }
-            else if (string.IsNullOrWhiteSpace(viewModel.RetailPrice))
+            else if (string.IsNullOrWhiteSpace(viewModel.Terms))
             {
                 ModelState.AddModelError("Terms", "The terms and conditions field is empty.");
             }
@@ -272,8 +272,8 @@ namespace SilentAuction.Controllers
                     item.Description = viewModel.Description;
                     item.CategoryId = categoryId;
                     item.RetailPrice = retailPrice;
-                    item.OfferExpires = offerExpires;
-                    item.Terms = terms;
+                    item.OfferExpires = viewModel.OfferExpires;
+                    item.Terms = viewModel.Terms;
                     try
                     {
                         _context.Update(item);
