@@ -38,7 +38,7 @@ namespace SilentAuction.Models
         [Required]
         [Display(Name = "Retail Price")]
         [DataType(DataType.Currency)]
-        [Column(TypeName = "Money")]
+        [Column(TypeName = "money")]
         public decimal RetailPrice { get; set; }
 
         // Has Many
@@ -47,6 +47,12 @@ namespace SilentAuction.Models
         public ICollection<Listing> Listings { get; set; }
 
         public ICollection<BidHistory> BidHistories { get; set; }
+
+        public string Terms { get; set; }
+
+        [Display(Name = "Offer Expires")]
+        [DataType(DataType.Date)]
+        public string OfferExpires { get; set; }
 
     }
 }

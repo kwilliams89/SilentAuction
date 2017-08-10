@@ -1,43 +1,136 @@
-@using SilentAuction.ViewModels
-@model ListingViewModel
+@using SilentAuction.ViewModels;
+@using SilentAuction.Controllers;
+@using System.Globalization;
+@model BidHistoryViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    var listing = Model.MyListing;
+    ViewData["Title"] = "Listing Details";
 }
 
-<h2>Details</h2>
+<h2 >@ViewData["Title"]</h2>
 
 <div>
-    <h4>Listing</h4>
-    <hr />
+    @{
+        var image = listing.Item.ItemMedia.FirstOrDefault();
+    }
+    @if (image != null)
+            {
+        <img class="center-block" src="@Url.Action(nameof(MediaController.DetailSized), "Media", values: new { id = image.MediaId})" />
+    }
+    else
+    {
+        <img class="center-block" src="~/images/no-image.jpg" />
+    }
+</div>
+
+<div>
     <dl class="dl-horizontal">
+
         <dt>
-            @Html.DisplayNameFor(model => model.MinimumBid)
+            <label>Name:</label>
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.MinimumBid)
+            @Html.DisplayFor(model => listing.Item.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Increment)
+            <label>Description:</label>
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Increment)
+            @Html.DisplayFor(model => listing.Item.Description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Auction)
+            <label>Sponsor:</label>
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Auction)
+            @Html.DisplayFor(model => model.MySponsor)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Item)
+            <p>Retail Value:</p>
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Item)
+            <p>@listing.Item.RetailPrice.ToThaiCurrencyDisplayString()</p>
+        </dd>
+        <dt>
+            <label asp-for="CurrentBid">Current Bid:</label>
+        </dt>
+        <dd>
+            <p>@Model.CurrentBid.ToThaiCurrencyDisplayString()</p>
+        </dd>
+        <dt>
+            <label asp-for="MinimumBid">Minimum Bid:</label>
+        </dt>
+        <dd>
+            <p>@Model.MinimumBid.ToThaiCurrencyDisplayString()</p>
+        </dd>
+        <dt>
+            <label asp-for="OfferExpires">Offer Expires:</label>
+        </dt>
+        <dd>
+            <p>@Html.DisplayFor(model => listing.Item.OfferExpires)</p>
+        </dd>
+        <dt>
+            <label asp-for="Terms">Terms and Conditions:</label>
+        </dt>
+        <dd>
+            <p>@Html.DisplayFor(model => listing.Item.Terms)</p>
         </dd>
     </dl>
 </div>
+
+
+
+<form asp-action="Details" asp-route-id="@listing.Id">
+    <div class="form-horizontal">
+        <h4>Bid Now</h4>
+        <hr />
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="col-md-2 control-label">First Name:</label>
+            <div class="col-md-5">
+                <input asp-for="MyBidDetails.FirstName" class="form-control" />
+                <span asp-validation-for="MyBidDetails.FirstName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Last Name:</label>
+            <div class="col-md-5">
+                <input asp-for="MyBidDetails.LastName" class="form-control" />
+                <span asp-validation-for="MyBidDetails.LastName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Email:</label>
+            <div class="col-md-5">
+                <input type="email" asp-for="MyBidDetails.Email" class="form-control" id="bidEmail" />
+                <span asp-validation-for="MyBidDetails.Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Phone Number:</label>
+            <div class="col-md-5">
+                <input type='tel'
+                       pattern='\d{3}[\-]\d{3}[\-]\d{4}'
+                       title='555-55-5555'
+                       asp-for="MyBidDetails.Phone"
+                       class="form-control" />
+                <span asp-validation-for="MyBidDetails.Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Bid Amount:</label>
+            <div class="col-md-5">
+                <input type="number" value="@(Decimal.ToInt32(Model.MinimumBid))" min="@(Decimal.ToInt32(Model.MinimumBid))" step="@Model.Increment" asp-for="MyBidDetails.Amount" class="form-control" />
+                <span asp-validation-for="MyBidDetails.Amount" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Place Bid" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Auctions" asp-action="SilentAuction" asp-route-id="@(listing.AuctionId)">Return to Listings</a>
 </div>

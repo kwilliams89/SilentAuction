@@ -7,37 +7,43 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SilentAuction.Data;
 using SilentAuction.Models;
+using SilentAuction.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace SilentAuction.Controllers
 {
     public class BidHistoriesController : Controller
     {
-        private readonly AuctionContext _context;
+        private AuctionContext AuctionContext { get; }
 
-        public BidHistoriesController(AuctionContext context)
+        public BidHistoriesController(AuctionContext auctionContext)
         {
-            _context = context;    
+            AuctionContext = auctionContext ?? throw new ArgumentNullException(nameof(auctionContext));
         }
 
         // GET: BidHistories
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.BidHistories.Include(b => b.Listing).Include(b => b.User);
-            return View(await auctionContext.ToListAsync());
+            var bidhistories = await AuctionContext.BidHistories.AsNoTracking()
+                .Include(l => l.Listing)
+                .Include(l => l.User).ToListAsync();
+            return View(bidhistories);
         }
 
         // GET: BidHistories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var bidHistory = await _context.BidHistories
+            var bidHistory = await AuctionContext.BidHistories
                 .Include(b => b.Listing)
                 .Include(b => b.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
+
+            var bidListing = await AuctionContext.Listings.Include(b => b.Item).SingleOrDefaultAsync(m => m.Id == bidHistory.ListingId);
+
+            bidHistory.Listing = bidListing;
+            bidHistory.User.Phone = Regex.Replace(bidHistory.User.Phone.ToString(), @"^(...)(...)(....)$", "$1-$2-$3");
+
             if (bidHistory == null)
             {
                 return NotFound();
@@ -49,8 +55,8 @@ namespace SilentAuction.Controllers
         // GET: BidHistories/Create
         public IActionResult Create()
         {
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id");
+            ViewData["UserId"] = new SelectList(AuctionContext.Users, "UserId", "Email");
             return View();
         }
 
@@ -63,12 +69,12 @@ namespace SilentAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bidHistory);
-                await _context.SaveChangesAsync();
+                AuctionContext.Add(bidHistory);
+                await AuctionContext.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", bidHistory.ListingId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", bidHistory.UserId);
+            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id", bidHistory.ListingId);
+            ViewData["UserId"] = new SelectList(AuctionContext.Users, "UserId", "Email", bidHistory.UserId);
             return View(bidHistory);
         }
 
@@ -80,13 +86,13 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var bidHistory = await _context.BidHistories.SingleOrDefaultAsync(m => m.Id == id);
+            var bidHistory = await AuctionContext.BidHistories.SingleOrDefaultAsync(m => m.Id == id);
             if (bidHistory == null)
             {
                 return NotFound();
             }
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", bidHistory.ListingId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", bidHistory.UserId);
+            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id", bidHistory.ListingId);
+            ViewData["UserId"] = new SelectList(AuctionContext.Users, "UserId", "Email", bidHistory.UserId);
             return View(bidHistory);
         }
 
@@ -106,8 +112,8 @@ namespace SilentAuction.Controllers
             {
                 try
                 {
-                    _context.Update(bidHistory);
-                    await _context.SaveChangesAsync();
+                    AuctionContext.Update(bidHistory);
+                    await AuctionContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -122,8 +128,8 @@ namespace SilentAuction.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ListingId"] = new SelectList(_context.Listings, "Id", "Id", bidHistory.ListingId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", bidHistory.UserId);
+            ViewData["ListingId"] = new SelectList(AuctionContext.Listings, "Id", "Id", bidHistory.ListingId);
+            ViewData["UserId"] = new SelectList(AuctionContext.Users, "UserId", "Email", bidHistory.UserId);
             return View(bidHistory);
         }
 
@@ -135,7 +141,7 @@ namespace SilentAuction.Controllers
                 return NotFound();
             }
 
-            var bidHistory = await _context.BidHistories
+            var bidHistory = await AuctionContext.BidHistories
                 .Include(b => b.Listing)
                 .Include(b => b.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
@@ -152,15 +158,15 @@ namespace SilentAuction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bidHistory = await _context.BidHistories.SingleOrDefaultAsync(m => m.Id == id);
-            _context.BidHistories.Remove(bidHistory);
-            await _context.SaveChangesAsync();
+            var bidHistory = await AuctionContext.BidHistories.SingleOrDefaultAsync(m => m.Id == id);
+            AuctionContext.BidHistories.Remove(bidHistory);
+            await AuctionContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         private bool BidHistoryExists(int id)
         {
-            return _context.BidHistories.Any(e => e.Id == id);
+            return AuctionContext.BidHistories.Any(e => e.Id == id);
         }
     }
 }

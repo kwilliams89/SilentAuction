@@ -3827,7 +3827,6 @@ tbody.collapse.in {
   position: relative;
   z-index: 2;
   float: left;
-  width: 100%;
   margin-bottom: 0;
 }
 .input-group .form-control:focus {
@@ -5210,6 +5209,7 @@ a.thumbnail.active {
 .media-object {
   display: block;
 }
+
 .media-object.img-thumbnail {
   max-width: none;
 }

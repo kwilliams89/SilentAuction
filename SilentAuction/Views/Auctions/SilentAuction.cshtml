@@ -1,6 +1,5 @@
 @using SilentAuction.ViewModels;
 @using SilentAuction.Controllers;
-@using System.Globalization;
 @model AuctionViewModel
 @{
     ViewData["Title"] = "Silent Auction";
@@ -88,13 +87,21 @@
                         </div>
 
                         <div class="col-md-2">
-                            <p>Retail Price: @listing.Item.RetailPrice.ToString("C", new CultureInfo("th-TH"))</p>
+                            <p>Retail Price: @listing.Item.RetailPrice.ToThaiCurrencyDisplayString()</p>
                         </div>
 
                         <div class="col-md-2">
-                            <p>Current Bid: @listing.MinimumBid.ToString("C", new CultureInfo("th-TH"))</p>
+                            <p>Current Bid: @listing.MinimumBid.ToThaiCurrencyDisplayString()</p>
                         </div>
-                    </div>
+                            <div class="col-md-2" style="padding-top: 50px">
+                                <a asp-controller="Listings"
+                                   asp-action="Details"
+                                   asp-route-id="@listing.Id"
+                                   class="btn btn-default ">
+                                    Bid Now
+                                </a>
+                            </div>  
+                    </div>      
                 </div>
             </div>
         </div>
