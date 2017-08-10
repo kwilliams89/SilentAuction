@@ -63,6 +63,18 @@
         <dd>
             <p>@Model.MinimumBid.ToThaiCurrencyDisplayString()</p>
         </dd>
+                <dt>
+            <label asp-for="MinimumBid">Minimum Bid:</label>
+        </dt>
+        <dd>
+            <p>@Model.MinimumBid.ToThaiCurrencyDisplayString()</p>
+        </dd>
+        <dt>
+            <label>Bidding Increment:</label>
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => listing.Increment)
+        </dd>
         <dt>
             <label asp-for="OfferExpires">Offer Expires:</label>
         </dt>
