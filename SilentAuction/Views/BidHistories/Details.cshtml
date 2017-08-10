@@ -48,7 +48,7 @@
             @Html.DisplayNameFor(model => model.Amount)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Amount)
+            <p>@Model.Amount.ToThaiCurrencyDisplayString()</p>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Date)
