@@ -128,7 +128,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartDate,EndDate")] Auction auction)
+        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate")] Auction auction)
         {
             if (ModelState.IsValid)
             {
@@ -160,7 +160,7 @@ namespace SilentAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartDate,EndDate")] Auction auction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate")] Auction auction)
         {
             if (id != auction.Id)
             {
